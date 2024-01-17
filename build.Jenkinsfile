@@ -20,8 +20,8 @@ pipeline {
     }
     post {
         always {
-            sh "docker image prune -f"
-            sh "docker rmi $(docker images --filter dangling=true -q)"
+            // sh "docker image prune -f"
+            sh "docker rmi $(docker images -q) -f"
         }
     }
 }
