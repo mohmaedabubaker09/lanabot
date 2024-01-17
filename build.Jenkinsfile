@@ -21,7 +21,7 @@ pipeline {
     post {
         always {
             sh '''
-            docker rmi $(docker images -q) -f
+                docker rmi $(docker images -q) -f
             '''
         }
     }
