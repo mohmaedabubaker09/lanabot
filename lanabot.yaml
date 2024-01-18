@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: lana-bot-pod
+  namespace: lanabot-dev-ns
+  labels:
+    project: lanabot-project
+    env: dev
+    release: v1.0
+spec:
+  containers:
+  - name: lana-bot-docker-container
+    image: 933060838752.dkr.ecr.eu-west-2.amazonaws.com/lana_bot_container:20240117_161121-14
+    ports:
+    - containerPort: 8443
