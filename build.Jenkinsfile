@@ -32,17 +32,18 @@ pipeline {
             }
         }
 
-        stage('Update Deployment Image') {
+        stage('Deploy') {
 //             steps {
 //                 withCredentials([kubeconfigContent(credentialsId: KUBECONFIG_CREDENTIAL_ID, variable: 'KUBECONFIG')]) {
 //                     sh "kubectl set image -f lanabot.yaml lana_bot_container=${ECR_REGISTRY}/lana_bot_container:${IMAGE_TAG} --kubeconfig=${KUBECONFIG}"
 //                     sh "kubectl apply -f lanabot.yaml --kubeconfig=${KUBECONFIG}"
 //                 }
 //             }
+
+        stage('Update Deployment Image') {
             steps {
                 withCredentials([file(credentialsId: 'KUBECONFIG_CREDENTIAL_ID', variable: 'KUBECONFIG')]) {
                     sh "kubectl apply -f lanabot.yaml --kubeconfig=${KUBECONFIG}"
-                }
             }
         }
     }
