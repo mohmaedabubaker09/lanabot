@@ -40,7 +40,7 @@ pipeline {
 //                 }
 //             }
             steps {
-                withCredentials([file(credentialsId: 'YOUR_KUBECONFIG_CREDENTIAL_ID', variable: 'KUBECONFIG')]) {
+                withCredentials([file(credentialsId: 'KUBECONFIG_CREDENTIAL_ID', variable: 'KUBECONFIG')]) {
                     sh "kubectl apply -f lanabot.yaml --kubeconfig=${KUBECONFIG}"
                 }
             }
