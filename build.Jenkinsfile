@@ -64,8 +64,8 @@ pipeline {
 
     environment {
         ECR_REGISTRY = "933060838752.dkr.ecr.eu-west-2.amazonaws.com"
-        TIMESTAMP = new Date().format('yyyyMMdd_HHmmss') // Correctly formatted timestamp
-        IMAGE_TAG = "${env.BUILD_NUMBER}_${TIMESTAMP}" // Concatenate build number and timestamp
+        TIMESTAMP = new Date().format('yyyyMMdd_HHmmss')
+        IMAGE_TAG = "${env.BUILD_NUMBER}_${TIMESTAMP}"
         KUBECONFIG_CREDENTIAL_ID = "KUBECONFIG_CREDENTIAL_ID"
         CLUSTER_NAME = "k8s-main"
         ECR_REGION = "eu-west-2"
@@ -87,7 +87,7 @@ pipeline {
         stage('Build and Push') {
             steps {
                 script {
-                    echo "IMAGE_TAG: ${IMAGE_TAG}" // Debug statement to check the IMAGE_TAG format
+                    echo "IMAGE_TAG: ${IMAGE_TAG}"
                     dockerImage = docker.build("${ECR_REGISTRY}/lana_bot_container:${IMAGE_TAG}") //, "--no-cache .")
                     dockerImage.push()
                 }
