@@ -5,7 +5,7 @@ pipeline {
         ECR_REGISTRY = "933060838752.dkr.ecr.eu-west-2.amazonaws.com"
         TIMESTAMP = new Date().format('yyyyMMdd_HHmmss')
         IMAGE_TAG = "${TIMESTAMP}-${BUILD_NUMBER}"
-        KUBECONFIG_CREDENTIAL_ID = "kubeconfig"
+        KUBECONFIG_CREDENTIAL_ID = "KUBECONFIG_CREDENTIAL_ID"
         CLUSTER_NAME = "k8s-main"
         ECR_REGION = "eu-west-2"
         CLUSTER_REGION = "us-east-1"
@@ -17,7 +17,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([aws(credentialsId: AWS_CREDENTIALS_ID, accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                        sh "aws ecr get-login-password --region ${ECR_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}"
+                        sh 'aws ecr get-login-password --region ${ECR_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}'
                     }
                 }
             }
@@ -26,7 +26,7 @@ pipeline {
         stage('Build and Push') {
             steps {
                 script {
-                    dockerImage = docker.build("${ECR_REGISTRY}/lana_bot_container:${IMAGE_TAG}") //, "--no-cache .")
+                    dockerImage = docker.build('${ECR_REGISTRY}/lana_bot_container:${IMAGE_TAG}') //, "--no-cache .")
                     dockerImage.push()
                 }
             }
@@ -42,13 +42,10 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                // withCredentials([file(credentialsId: 'KUBECONFIG_CREDENTIAL_ID', variable: 'KUBECONFIG')]) {
-                sh '''
-                    aws eks --region us-east-1 update-kubeconfig --name k8s-main
-                    kubectl apply -f lanabot.yaml --validate=false
-                    # --kubecon fig=${KUBECONFIG}
-                '''
-                // }
+                withCredentials([file(credentialsId: 'KUBECONFIG_CREDENTIAL_ID', variable: KUBECONFIG_CREDENTIAL_ID)]) {
+                    sh 'aws eks --region us-east-1 update-kubeconfig --name k8s-main'
+                    sh 'kubectl apply -f lanabot.yaml --kubeconfig=${KUBECONFIG_CREDENTIAL_ID}'
+                }
             }
         }
     }
