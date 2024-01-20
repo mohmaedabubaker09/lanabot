@@ -26,7 +26,7 @@ pipeline {
         stage('Build and Push') {
             steps {
                 script {
-                    dockerImage = docker.build("${ECR_REGISTRY}/lana_bot_container:${IMAGE_TAG}", "--no-cache .")
+                    dockerImage = docker.build("${ECR_REGISTRY}/lana_bot_container:${IMAGE_TAG}") //, "--no-cache .")
                     dockerImage.push()
                 }
             }
@@ -45,7 +45,7 @@ pipeline {
                 // withCredentials([file(credentialsId: 'KUBECONFIG_CREDENTIAL_ID', variable: 'KUBECONFIG')]) {
                 sh '''
                     aws eks --region us-east-1 update-kubeconfig --name k8s-main
-                    kubectl apply -f lanabot.yaml
+                    kubectl apply -f lanabot.yaml --validate=false
                     # --kubecon fig=${KUBECONFIG}
                 '''
                 // }
