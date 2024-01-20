@@ -42,8 +42,8 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                withCredentials([file(credentialsId: 'KUBECONFIG_CREDENTIAL_ID', variable: 'KUBECONFIG')]) {
-                    sh "kubectl apply -f lanabot.yaml" // --kubeconfig=${KUBECONFIG}"
+                // withCredentials([file(credentialsId: 'KUBECONFIG_CREDENTIAL_ID', variable: 'KUBECONFIG')]) {
+                    sh "kubectl apply -f lanabot.yaml" // --kubecon fig=${KUBECONFIG}"
                 }
             }
         }
