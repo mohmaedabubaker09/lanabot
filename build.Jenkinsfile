@@ -43,7 +43,11 @@ pipeline {
         stage('Deploy') {
             steps {
                 // withCredentials([file(credentialsId: 'KUBECONFIG_CREDENTIAL_ID', variable: 'KUBECONFIG')]) {
-                sh "kubectl apply -f lanabot.yaml" // --kubecon fig=${KUBECONFIG}"
+                sh '''
+                    aws eks --region us-east-1 update-kubeconfig --name k8s-main
+                    kubectl apply -f lanabot.yaml
+                    # --kubecon fig=${KUBECONFIG}
+                '''
                 // }
             }
         }
