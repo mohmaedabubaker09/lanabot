@@ -59,6 +59,59 @@
 //
 //
 // ----
+// pipeline {
+//     agent any
+//
+//     environment {
+//         ECR_REGISTRY = "933060838752.dkr.ecr.eu-west-2.amazonaws.com"
+//         TIMESTAMP = new Date().format('yyyyMMdd_HHmmss')
+//         IMAGE_TAG = "${env.BUILD_NUMBER}_${TIMESTAMP}"
+//         KUBECONFIG_CREDENTIAL_ID = "KUBECONFIG_CREDENTIAL_ID"
+//         CLUSTER_NAME = "k8s-main"
+//         ECR_REGION = "eu-west-2"
+//         CLUSTER_REGION = "us-east-1"
+//         AWS_CREDENTIALS_ID = 'AWS credentials'
+//     }
+//
+//     stages {
+//         stage('Login to AWS ECR') {
+//             steps {
+//                 script {
+//                     withCredentials([aws(credentialsId: AWS_CREDENTIALS_ID, accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+//                         sh 'aws ecr get-login-password --region ${ECR_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}'
+//                     }
+//                 }
+//             }
+//         }
+//
+//         stage('Build and Push') {
+//             steps {
+//                 script {
+//                     echo "IMAGE_TAG: ${IMAGE_TAG}"
+//                     dockerImage = docker.build("${ECR_REGISTRY}/lana_bot_container:${IMAGE_TAG}") //, "--no-cache .")
+//                     dockerImage.push()
+//                 }
+//             }
+//         }
+//
+//         stage('Deploy') {
+//             steps {
+//                 withCredentials([file(credentialsId: 'KUBECONFIG_CREDENTIAL_ID', variable: KUBECONFIG_CREDENTIAL_ID)]) {
+//                     sh 'aws eks --region us-east-1 update-kubeconfig --name k8s-main'
+//                     sh 'kubectl apply -f lanabot.yaml --kubeconfig=${KUBECONFIG_CREDENTIAL_ID}'
+//                 }
+//             }
+//         }
+//     }
+//
+//     post {
+//         always {
+//             sh 'docker rmi $(docker images -q) -f || true'
+//         }
+//     }
+// }
+// -------
+
 pipeline {
     agent any
 
@@ -66,7 +119,7 @@ pipeline {
         ECR_REGISTRY = "933060838752.dkr.ecr.eu-west-2.amazonaws.com"
         TIMESTAMP = new Date().format('yyyyMMdd_HHmmss')
         IMAGE_TAG = "${env.BUILD_NUMBER}_${TIMESTAMP}"
-        KUBECONFIG_CREDENTIAL_ID = "KUBECONFIG_CREDENTIAL_ID"
+        KUBECONFIG = "/var/lib/jenkins/.kube/config"
         CLUSTER_NAME = "k8s-main"
         ECR_REGION = "eu-west-2"
         CLUSTER_REGION = "us-east-1"
@@ -96,9 +149,8 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                withCredentials([file(credentialsId: 'KUBECONFIG_CREDENTIAL_ID', variable: KUBECONFIG_CREDENTIAL_ID)]) {
-                    sh 'aws eks --region us-east-1 update-kubeconfig --name k8s-main'
-                    sh 'kubectl apply -f lanabot.yaml --kubeconfig=${KUBECONFIG_CREDENTIAL_ID}'
+                script {
+                    sh 'kubectl apply -f lanabot.yaml'
                 }
             }
         }
