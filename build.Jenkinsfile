@@ -7,6 +7,8 @@ pipeline {
         IMAGE_TAG = "${env.BUILD_NUMBER}_${TIMESTAMP}"
         ECR_REGION = "eu-west-2"
         AWS_CREDENTIALS_ID = 'AWS credentials'
+        KUBE_CONFIG_CRED = 'KUBE_CONFIG_CRED'
+
     }
 
     stages {
@@ -33,7 +35,11 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
+                    withCredentials([file(credentialsId: 'KUBE_CONFIG_CRED', variable: KUBE_CONFIG_CRED)]) {
+//                     sh 'aws eks --region us-east-1 update-kubeconfig --name k8s-main'
+//                     sh 'kubectl apply -f lanabot.yaml --kubeconfig=${KUBECONFIG_CREDENTIAL_ID}'
                     sh 'kubectl apply -f lanabot.yaml'
+                    }
                 }
             }
         }
