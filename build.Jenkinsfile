@@ -35,10 +35,12 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    withCredentials([file(credentialsId: 'KUBE_CONFIG_CRED', variable: KUBE_CONFIG_CRED)]) {
+//                    withCredentials([file(credentialsId: 'KUBE_CONFIG_CRED', variable: KUBE_CONFIG_CRED)]) {
 //                     sh 'aws eks --region us-east-1 update-kubeconfig --name k8s-main'
 //                     sh 'kubectl apply -f lanabot.yaml --kubeconfig=${KUBECONFIG_CREDENTIAL_ID}'
-                    sh 'kubectl apply -f lanabot.yaml'
+//                    sh 'kubectl apply -f lanabot.yaml'
+                    withCredentials([file(credentialsId: 'KUBE_CONFIG_CRED', variable: 'KUBECONFIG')]) {
+                        sh 'kubectl apply -f lanabot.yaml --validate=false'
                     }
                 }
             }
