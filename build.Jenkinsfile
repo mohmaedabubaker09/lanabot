@@ -26,7 +26,7 @@ pipeline {
             steps {
                 script {
                     echo "IMAGE_TAG: ${IMAGE_TAG}"
-                    dockerImage = docker.build("${ECR_REGISTRY}/lana_bot_container:${IMAGE_TAG}", "--no-cache .")
+                    dockerImage = docker.build("${ECR_REGISTRY}/lana_bot_container:${IMAGE_TAG}") // , "--no-cache .")
                     dockerImage.push()
                 }
             }
@@ -40,7 +40,7 @@ pipeline {
 //                     sh 'kubectl apply -f lanabot.yaml --kubeconfig=${KUBECONFIG_CREDENTIAL_ID}'
 //                    sh 'kubectl apply -f lanabot.yaml'
                     withCredentials([file(credentialsId: 'KUBE_CONFIG_CRED', variable: 'KUBECONFIG')]) {
-                        sh 'kubectl apply -f lanabot.yaml --validate=false'
+                        sh 'kubectl apply -f lanabot.yaml' // --validate=false'
                     }
                 }
             }
