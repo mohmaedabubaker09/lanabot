@@ -39,7 +39,7 @@ pipeline {
                     withCredentials([aws(credentialsId: AWS_CREDENTIALS_ID, accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                         sh 'aws eks update-kubeconfig --region ${CLUSTER_REGION} --name ${CLUSTER_NAME}'
                         withCredentials([file(credentialsId: 'KUBE_CONFIG_CRED', variable: 'KUBECONFIG')]) {
-                            sh 'kubectl apply -f lanabot.yaml --validate=false'
+                            sh 'kubectl apply -f lanabot.yaml' //--validate=false'
                         }
                     }
                 }
