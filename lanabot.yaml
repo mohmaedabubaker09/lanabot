@@ -10,6 +10,6 @@ metadata:
 spec:
   containers:
   - name: lana-bot-docker-container
-    image: 933060838752.dkr.ecr.eu-west-2.amazonaws.com/lana_bot_container:66_20240122_110610
+    image:
     ports:
     - containerPort: 8443
