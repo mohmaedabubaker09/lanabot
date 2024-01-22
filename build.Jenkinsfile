@@ -39,11 +39,14 @@ pipeline {
                     withCredentials([aws(credentialsId: AWS_CREDENTIALS_ID, accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                         sh 'aws eks update-kubeconfig --region ${CLUSTER_REGION} --name ${CLUSTER_NAME}'
                         withCredentials([file(credentialsId: 'KUBE_CONFIG_CRED', variable: 'KUBECONFIG')]) {
-                            sh 'aws eks --region us-east-1 update-kubeconfig --name k8s-main'
-                            sh 'kubectl config set-context --current --namespace=lanabot-dev-ns'
+                            // sh 'aws eks --region us-east-1 update-kubeconfig --name k8s-main'
+                            // sh 'kubectl config set-context --current --namespace=lanabot-dev-ns'
                             sh 'kubectl apply -f lanabot.yaml' //--validate=false'
                         }
                     }
+//                     withCredentials([file(credentialsId: 'kubeconfig-credentials', variable: 'KUBECONFIG_FILE')]) {
+//                         sh "aws eks update-kubeconfig --region us-east-1 --name k8s-main --kubeconfig \$KUBECONFIG_FILE"
+//                     }
                 }
             }
         }
