@@ -10,6 +10,6 @@ metadata:
 spec:
   containers:
   - name: lana-bot-docker-container
-    image: lanabot:latest
+    image: lanabot_image:tag
     ports:
     - containerPort: 8443
