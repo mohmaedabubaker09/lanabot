@@ -10,7 +10,6 @@ pipeline {
         KUBE_CONFIG_CRED = 'KUBE_CONFIG_CRED'
         CLUSTER_NAME = "k8s-main"
         CLUSTER_REGION = "us-east-1"
-        MANIFEST_FILE = "lanabot.yaml"
     }
 
     stages {
@@ -43,13 +42,13 @@ pipeline {
                             // sh 'aws eks --region us-east-1 update-kubeconfig --name k8s-main'
                             // sh 'kubectl config set-context --current --namespace=lanabot-dev-ns'
                             sh "sed -i 's|image: .*|image: ${ECR_REGISTRY}/lana_bot_container:${IMAGE_TAG}|' lanabot.yaml"
-                            sh "cat lanabot.yaml"
+                            // sh "cat lanabot.yaml"
                             sh 'kubectl apply -f lanabot.yaml' //--validate=false'
                         }
                     }
-//                     withCredentials([file(credentialsId: 'kubeconfig-credentials', variable: 'KUBECONFIG_FILE')]) {
-//                         sh "aws eks update-kubeconfig --region us-east-1 --name k8s-main --kubeconfig \$KUBECONFIG_FILE"
-//                     }
+                    // withCredentials([file(credentialsId: 'kubeconfig-credentials', variable: 'KUBECONFIG_FILE')]) {
+                    //    sh "aws eks update-kubeconfig --region us-east-1 --name k8s-main --kubeconfig \$KUBECONFIG_FILE"
+                    // }
                 }
             }
         }
