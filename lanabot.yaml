@@ -10,6 +10,6 @@ metadata:
 spec:
   containers:
   - name: lana-bot-docker-container
-    sed:
+    image:
     ports:
     - containerPort: 8443
