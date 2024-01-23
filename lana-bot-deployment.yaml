@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lana-bot-deployment
+  namespace: lanabot-dev-ns
+  labels:
+    project: lanabot-project
+    env: dev
+    release: v1.0
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lana-bot
+  template:
+    metadata:
+      labels:
+        app: lana-bot
+    spec:
+      containers:
+      - name: lana-bot-docker-container
+        image: lanabot_image:tag
+        ports:
+        - containerPort: 8443
+
+
+#apiVersion: v1
+#kind: Pod
+#metadata:
+#  name: lana-bot-pod
+#  namespace: lanabot-dev-ns
+#  labels:
+#    project: lanabot-project
+#    env: dev
+#    release: v1.0
+#spec:
+#  containers:
+#  - name: lana-bot-docker-container
+#    image: lanabot_image:tag
+#    ports:
+#    - containerPort: 8443
