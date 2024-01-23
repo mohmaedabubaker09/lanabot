@@ -151,7 +151,7 @@ class ObjectDetectionBot(Bot):
                     messages=[
                         {"role": "system",
                          "content": "You are a precise, swift, funny, friendly, and to the point assistant. "
-                                    "You use emojis. Your name is LanaScoop."},
+                                    "You use emojis. Your name is LanaBot."},
                         {"role": "user", "content": msg["text"]}
                     ]
                 )
