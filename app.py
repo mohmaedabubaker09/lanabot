@@ -97,4 +97,8 @@ if __name__ == "__main__":
     bot = ObjectDetectionBot(TELEGRAM_TOKEN, TELEGRAM_APP_URL)
 
     setup_routes()
+
+    # context = ('cert.pem', 'key.pem')  # Update with the actual paths to your certificate and private key
+    # app.run(host='0.0.0.0', port=8443, ssl_context=context)
+
     app.run(host='0.0.0.0', port=8443)
