@@ -15,6 +15,10 @@ def setup_routes():
     def index():
         return 'Ok'
 
+    @app.route('/lanabot', methods=['GET'])
+    def index():
+        return 'Hello from Lanabot'
+
     @app.route(f'/{TELEGRAM_TOKEN}/', methods=['POST'])
     def webhook():
         req = request.get_json()
