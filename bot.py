@@ -23,12 +23,12 @@ class Bot:
         self.telegram_bot_client.remove_webhook()
         time.sleep(0.5)
 
-        self.telegram_bot_client.set_webhook(url=f'{telegram_chat_url}/{token}/',
-                                             timeout=60)
-
         # self.telegram_bot_client.set_webhook(url=f'{telegram_chat_url}/{token}/',
-        #                                      timeout=60,
-        #                                      certificate=open("lanabot_public.pem", 'r'))
+        #                                      timeout=60)
+
+        self.telegram_bot_client.set_webhook(url=f'{telegram_chat_url}/{token}/',
+                                             timeout=60,
+                                             certificate=open("lanabot_public.pem", 'r'))
 
     def send_text(self, chat_id, text, reply_markup=None):
         message = self.telegram_bot_client.send_message(chat_id, text, reply_markup=reply_markup)
