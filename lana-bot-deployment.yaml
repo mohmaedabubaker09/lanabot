@@ -9,7 +9,7 @@ metadata:
     env: dev
     release: v1.0
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       microservice: lana-bot
