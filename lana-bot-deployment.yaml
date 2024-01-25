@@ -12,7 +12,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-    app: lana-bot
+      app: lana-bot
   template:
     metadata:
       labels:
