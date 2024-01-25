@@ -16,6 +16,9 @@ spec:
     metadata:
       labels:
         app: lana-bot
+        project: lanabot-project
+        env: dev
+        release: v1.0
     spec:
       containers:
       - name: lana-bot-docker-container
