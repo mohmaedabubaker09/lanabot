@@ -26,3 +26,10 @@ spec:
         image: lanabot_image:tag
         ports:
         - containerPort: 8443
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
