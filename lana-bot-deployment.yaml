@@ -4,7 +4,7 @@ metadata:
   name: lana-bot-deployment
   namespace: lanabot-dev-ns
   labels:
-    microservice: lana-bot
+    app: lana-bot
     project: lanabot-project
     env: dev
     release: v1.0
@@ -12,11 +12,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-    microservice: lana-bot
+    app: lana-bot
   template:
     metadata:
       labels:
-        microservice: lana-bot
+        app: lana-bot
         project: lanabot-project
         env: dev
         release: v1.0
