@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
       - name: lana-bot-docker-container
-        image: lanabot_image:tag
+        image: lanabot_img:tag
         ports:
         - containerPort: 8443
         resources:
@@ -45,3 +45,52 @@ spec:
             port: 8443
           initialDelaySeconds: 10
           periodSeconds: 20
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: lanabot-service
+  labels:
+    project: lanabot-project
+    env: dev
+    release: v1.0
+spec:
+  selector:
+    microservice: lana-bot
+  ports:
+    - protocol: TCP
+      port: 8443
+      targetPort: 8443
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: lanabot
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  labels:
+    project: lanabot-project
+    env: dev
+    release: v1.0
+spec:
+  tls:
+  - hosts:
+    - lanabot.atech-bot.click
+    secretName: lanabot-tls-secret
+  rules:
+  - host: lanabot.atech-bot.click
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: lanabot-service
+            port:
+              number: 8443
+  ingressClassName: nginx
