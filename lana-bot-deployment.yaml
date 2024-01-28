@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
       - name: lana-bot-docker-container
-        image: lanabot_img:tag
+        image: lanabot_image:tag
         ports:
         - containerPort: 8443
         resources:
@@ -33,15 +33,15 @@ spec:
           requests:
             cpu: 100m
             memory: 100Mi
-#        readinessProbe:
-#          httpGet:
-#            path: /
-#            port: 8443
-#          initialDelaySeconds: 5
-#          periodSeconds: 10
-#        livenessProbe:
-#          httpGet:
-#            path: /
-#            port: 8443
-#          initialDelaySeconds: 10
-#          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8443
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8443
+          initialDelaySeconds: 10
+          periodSeconds: 20
