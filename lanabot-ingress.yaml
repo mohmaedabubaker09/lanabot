@@ -18,7 +18,7 @@ spec:
   - host: lanabot.atech-bot.click
     http:
       paths:
-      - path: /
+      - path: /health
         pathType: Prefix
         backend:
           service:
