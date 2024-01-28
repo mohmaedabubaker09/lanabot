@@ -35,13 +35,13 @@ spec:
             memory: 100Mi
         readinessProbe:
           httpGet:
-            path: /
+            path: /health
             port: 8443
           initialDelaySeconds: 5
           periodSeconds: 10
         livenessProbe:
           httpGet:
-            path: /
+            path: /health
             port: 8443
           initialDelaySeconds: 10
           periodSeconds: 20

@@ -15,6 +15,14 @@ def setup_routes():
     def index():
         return 'Ok'
 
+    @app.route("/health")
+    def health_check():
+        global ready_and_live
+        if ready_and_live:
+            return "App is running and ready", 200
+        else:
+            return "App is initializing", 202
+
     # @app.route('/lanabot/', methods=['GET'])
     # def index1():
     #     return 'Hello from Lanabot'
