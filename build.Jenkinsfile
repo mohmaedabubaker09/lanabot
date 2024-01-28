@@ -43,6 +43,8 @@ pipeline {
                             // sh 'kubectl config set-context --current --namespace=lanabot-dev-ns'
                             sh "sed -i 's|image: .*|image: ${ECR_REGISTRY}/lana_bot_container:${IMAGE_TAG}|' lana-bot-deployment.yaml"
                             // sh "cat lana-bot-deployment.yaml"
+                            sh 'kubectl apply -f lanabot-ingress.yaml'
+                            sh 'kubectl apply -f lanabot-service.yaml'
                             sh 'kubectl apply -f lana-bot-deployment.yaml' //--validate=false'
                         }
                     }
