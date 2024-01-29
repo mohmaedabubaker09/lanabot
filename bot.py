@@ -138,7 +138,7 @@ class ObjectDetectionBot(Bot):
 
         # self.send_text(msg['chat']['id'], "Hello, talk to me habibi")
 
-        # logger.info(f'Incoming message: {msg}')
+        logger.info(f'Incoming message: {msg}')
 
         if not (self.is_current_msg_photo(msg)):
             text = msg.get('text')
