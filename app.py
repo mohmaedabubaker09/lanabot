@@ -22,7 +22,7 @@ def setup_routes():
     @app.route(f'/{TELEGRAM_TOKEN}/', methods=['POST'])
     def webhook():
         req = request.get_json()
-        # logger.info(f"Received request: {req}")  # Log the incoming request for debugging
+        logger.info(f"Received request: {req}")  # Log the incoming request for debugging
         if 'message' in req:
             bot.handle_message(req['message'])
         elif 'callback_query' in req:
