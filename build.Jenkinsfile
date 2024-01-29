@@ -27,7 +27,7 @@ pipeline {
             steps {
                 script {
                     echo "IMAGE_TAG: ${IMAGE_TAG}"
-                    dockerImage = docker.build("${ECR_REGISTRY}/lana_bot_container:${IMAGE_TAG}") // , "--no-cache .")
+                    dockerImage = docker.build("${ECR_REGISTRY}/lana_bot_container:${IMAGE_TAG}", "--no-cache .")
                     dockerImage.push()
                 }
             }
