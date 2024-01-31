@@ -76,6 +76,24 @@ pipeline {
             }
         }
 
+//         stage('Update GitHub') {
+//             steps {
+//                 script {
+//                     withCredentials([usernamePassword(credentialsId: GITHUB_CREDENTIALS_ID, usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PASSWORD')]) {
+//                         dir('./') {
+//                             sh 'git config user.email "mohmaedabubaker09@gmail.com"'
+//                             sh 'git config user.name "Mohamed Abu Baker"'
+//                             sh 'git add lana-bot-deployment.yaml'
+//                             sh 'git commit -m "Committing a new version of lana-bot-deployment.yaml"'
+//                             sh 'git remote add origin https://github.com/mohmaedabubaker09/lanabot-k8s.git'
+//                             sh 'git push -u origin main'
+//                         }
+//                     }
+//                 }
+//             }
+//         }
+//     }
+
         stage('Update GitHub') {
             steps {
                 script {
@@ -85,14 +103,20 @@ pipeline {
                             sh 'git config user.name "Mohamed Abu Baker"'
                             sh 'git add lana-bot-deployment.yaml'
                             sh 'git commit -m "Committing a new version of lana-bot-deployment.yaml"'
-                            sh 'git remote add origin https://github.com/mohmaedabubaker09/lanabot-k8s.git'
-                            sh 'git push -u origin main'
+
+                            def remoteExists = sh(script: 'git remote -v | grep origin', returnStatus: true).isSuccess()
+
+                            if (remoteExists) {
+                                sh 'git push origin main'
+                            } else {
+                                sh 'git remote add origin https://github.com/mohmaedabubaker09/lanabot-k8s.git'
+                                sh 'git push -u origin main'
+                            }
                         }
                     }
                 }
             }
         }
-    }
 
     post {
         always {
