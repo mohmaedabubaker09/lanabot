@@ -84,8 +84,8 @@ pipeline {
                             sh 'git config user.email "mohmaedabubaker09@gmail.com"'
                             sh 'git config user.name "Mohamed Abu Baker"'
                             sh 'git add lana-bot-deployment.yaml'
-                            sh 'git commit -m "Update lana-bot-deployment.yaml"'
-                            sh 'git push https://${GITHUB_USERNAME}:${GITHUB_PASSWORD}@${GITHUB_REPO_URL} master'
+                            sh 'git commit -m "Committing a new version of lana-bot-deployment.yaml"'
+                            sh 'git push ${GITHUB_USERNAME}:${GITHUB_PASSWORD}@github.com/mohmaedabubaker09/lanabot-k8s.git HEAD:main'
                         }
                     }
                 }
