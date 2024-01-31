@@ -85,7 +85,8 @@ pipeline {
                             sh 'git config user.name "Mohamed Abu Baker"'
                             sh 'git add lana-bot-deployment.yaml'
                             sh 'git commit -m "Committing a new version of lana-bot-deployment.yaml"'
-                            sh 'git push ${GITHUB_USERNAME}:${GITHUB_PASSWORD}@github.com/mohmaedabubaker09/lanabot-k8s.git HEAD:main'
+//                             sh 'git remote add origin https://github.com/mohmaedabubaker09/lanabot-k8s.git'
+                            sh 'git push -u origin main'
                         }
                     }
                 }
