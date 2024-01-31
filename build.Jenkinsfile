@@ -80,8 +80,8 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: GITHUB_CREDENTIALS_ID, usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PASSWORD')]) {
-                        dir('path/to/your/repository') {
-                            sh 'git config user.email "mohamedabubaker09@gmail.com"'
+                        dir('./') {
+                            sh 'git config user.email "mohmaedabubaker09@gmail.com"'
                             sh 'git config user.name "Mohamed Abu Baker"'
                             sh 'git add lana-bot-deployment.yaml'
                             sh 'git commit -m "Update lana-bot-deployment.yaml"'
