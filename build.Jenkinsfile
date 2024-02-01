@@ -60,6 +60,7 @@ pipeline {
             steps {
                 script {
                     git 'https://github.com/mohmaedabubaker09/lanabot-k8s.git'
+                    git branch: 'main', credentialsId: 'github', url: 'https://github.com/mohmaedabubaker09/lanabot-k8s.git'
                 }
             }
         }
@@ -67,15 +68,16 @@ pipeline {
         stage('Update GitHub') {
             steps {
                 script {
-                    sh 'git config user.email "mohmaedabubaker09@gmail.com"'
-                    sh 'git config user.name "Mohamed Abu Baker"'
-
-                    sh 'git add lana-bot-deployment.yaml'
-                    sh 'git commit -m "Committing a new version of lana-bot-deployment.yaml"'
-
-                    def remoteExists = sh(script: 'git remote -v | grep origin', returnStatus: true).isSuccess()
-
                     withCredentials([usernamePassword(credentialsId: GITHUB_CREDENTIALS_ID, usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PASSWORD')]) {
+                        sh 'git config user.email "mohmaedabubaker09@gmail.com"'
+                        sh 'git config user.name "Mohamed Abu Baker"'
+
+                        sh 'git add lana-bot-deployment.yaml'
+                        sh 'git commit -m "Committing a new version of lana-bot-deployment.yaml"'
+
+                        def remoteExists = sh(script: 'git remote -v | grep origin', returnStatus: true).isSuccess()
+
+
                         if (remoteExists) {
                             sh "git push https://${GITHUB_USERNAME}:${GITHUB_PASSWORD}@github.com/mohmaedabubaker09/lanabot-k8s.git main"
                         } else {
