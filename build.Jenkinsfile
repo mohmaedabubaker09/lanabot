@@ -52,7 +52,8 @@ pipeline {
                         withCredentials([file(credentialsId: 'KUBE_CONFIG_CRED', variable: 'KUBECONFIG')]) {
                             sh 'kubectl apply -f lana-bot-deployment.yaml' //--validate=false'
 //                             LANABOT_DEPLOYMENT = sh(script: 'cat lana-bot-deployment.yaml', returnStdout: true).trim()
-                    }
+                        }
+                     }
                 }
             }
         }
