@@ -60,7 +60,7 @@ pipeline {
         stage('Clone Repository lanabot-k8s') {
             steps {
                 script {
-                   sh 'mkdir ./lanabot-k8s'
+//                    sh 'mkdir ./lanabot-k8s'
                    dir('./lanabot-k8s') {
                       git branch: 'main', credentialsId: 'github', url: 'https://github.com/mohmaedabubaker09/lanabot-k8s.git'
                    }
