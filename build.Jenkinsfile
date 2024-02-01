@@ -12,6 +12,7 @@ pipeline {
         CLUSTER_REGION = "us-east-1"
         GITHUB_REPO_URL = 'https://github.com/mohmaedabubaker09/lanabot-k8s.git'
         GITHUB_CREDENTIALS_ID = 'github'
+        LANABOT_DEPLOYMENT = ''
     }
 
     stages {
@@ -50,7 +51,7 @@ pipeline {
                         sh 'aws eks update-kubeconfig --region ${CLUSTER_REGION} --name ${CLUSTER_NAME}'
                         withCredentials([file(credentialsId: 'KUBE_CONFIG_CRED', variable: 'KUBECONFIG')]) {
                             sh 'kubectl apply -f lana-bot-deployment.yaml' //--validate=false'
-                            sh 'ls -la'
+                            LANABOT_DEPLOYMENT = sh(script: 'cat lana-bot-deployment.yaml', returnStdout: true).trim()
                         }
                     }
                 }
@@ -63,7 +64,6 @@ pipeline {
 
                    dir('./lanabot-k8s') {
                       git branch: 'main', credentialsId: 'github', url: 'https://github.com/mohmaedabubaker09/lanabot-k8s.git'
-                      sh 'cp ../lana-bot-deployment.yaml ./'
                       sh 'ls -la'
                    }
                 }
@@ -78,6 +78,7 @@ pipeline {
                             sh 'git config user.email "mohmaedabubaker09@gmail.com"'
                             sh 'git config user.name "Mohamed Abu Baker"'
                             sh 'ls -la'
+                            sh 'echo "${env.LANABOT_DEPLOYMENT}" > lana-bot-deployment.yaml'
 
                             sh 'git add lana-bot-deployment.yaml'
                             sh 'git commit -m "Committing a new version of lana-bot-deployment.yaml"'
