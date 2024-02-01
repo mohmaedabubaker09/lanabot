@@ -96,7 +96,7 @@ pipeline {
                             sh 'ls -la'
 //                             sh 'echo "${env.LANABOT_DEPLOYMENT}" > lana-bot-deployment.yaml'
                             sh 'echo "${LANABOT_DEPLOYMENT}" | tee lana-bot-deployment.yaml'
-                            sh 'chown jenkins:jenkins lana-bot-deployment.yaml'                        }
+                            sh 'chown jenkins:jenkins lana-bot-deployment.yaml'
                             sh 'git add lana-bot-deployment.yaml'
                             sh 'git commit -m "Committing a new version of lana-bot-deployment.yaml"'
 
