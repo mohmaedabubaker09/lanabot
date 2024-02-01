@@ -75,7 +75,8 @@ pipeline {
                         sh 'git config user.email "mohmaedabubaker09@gmail.com"'
                         sh 'git config user.name "Mohamed Abu Baker"'
                         sh 'ls -la'
-                        sh 'git add ../lana-bot-deployment.yaml'
+                        sh 'sudo cp ../lana-bot-deployment.yaml ./'
+                        sh 'git add lana-bot-deployment.yaml'
                         sh 'git commit -m "Committing a new version of lana-bot-deployment.yaml"'
 
                         def remoteExists = sh(script: 'git remote -v | grep origin', returnStatus: true).isSuccess()
@@ -93,6 +94,7 @@ pipeline {
             }
         }
     }
+
 
     post {
         always {
