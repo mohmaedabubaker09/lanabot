@@ -12,7 +12,6 @@ pipeline {
         CLUSTER_REGION = "us-east-1"
         GITHUB_REPO_URL = 'https://github.com/mohmaedabubaker09/lanabot-k8s.git'
         GITHUB_CREDENTIALS_ID = 'github'
-        LANABOT_DEPLOYMENT = ''
     }
 
     stages {
@@ -25,91 +24,70 @@ pipeline {
                 }
             }
         }
+    }
 
-        stage('Build and Push') {
-            steps {
-                script {
-                    echo "IMAGE_TAG: ${IMAGE_TAG}"
-                    dockerImage = docker.build("${ECR_REGISTRY}/lana_bot_container:${IMAGE_TAG}") //, "--no-cache .")
-                    dockerImage.push()
-                }
+    stage('Build and Push') {
+        steps {
+            script {
+                echo "IMAGE_TAG: ${IMAGE_TAG}"
+                dockerImage = docker.build("${ECR_REGISTRY}/lana_bot_container:${IMAGE_TAG}") //, "--no-cache .")
+                dockerImage.push()
             }
         }
+    }
 
-        stage('Update File') {
-            steps {
-                script {
-                    sh "sed -i 's|image: .*|image: ${ECR_REGISTRY}/lana_bot_container:${IMAGE_TAG}|' lana-bot-deployment.yaml"
-                }
-            }
-        }
-
-//         stage('Deploy to K8s') {
+//         stage('Deploy') {
 //             steps {
 //                 script {
 //                     withCredentials([aws(credentialsId: AWS_CREDENTIALS_ID, accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
 //                         sh 'aws eks update-kubeconfig --region ${CLUSTER_REGION} --name ${CLUSTER_NAME}'
 //                         withCredentials([file(credentialsId: 'KUBE_CONFIG_CRED', variable: 'KUBECONFIG')]) {
+//                             // sh 'aws eks --region us-east-1 update-kubeconfig --name k8s-main'
+//                             // sh 'kubectl config set-context --current --namespace=lanabot-dev-ns'
+//                             sh "sed -i 's|image: .*|image: ${ECR_REGISTRY}/lana_bot_container:${IMAGE_TAG}|' lana-bot-deployment.yaml"
+//                             // sh "cat lana-bot-deployment.yaml"
 //                             sh 'kubectl apply -f lana-bot-deployment.yaml' //--validate=false'
-//                             LANABOT_DEPLOYMENT = sh(script: 'cat lana-bot-deployment.yaml', returnStdout: true).trim()
+//                         }
 //                     }
+//                     // withCredentials([file(credentialsId: 'kubeconfig-credentials', variable: 'KUBECONFIG_FILE')]) {
+//                     //    sh "aws eks update-kubeconfig --region us-east-1 --name k8s-main --kubeconfig \$KUBECONFIG_FILE"
+//                     // }
 //                 }
 //             }
 //         }
 
-        stage('Deploy to K8s') {
-            steps {
-                script {
-                    withCredentials([aws(credentialsId: AWS_CREDENTIALS_ID, accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                        sh 'aws eks update-kubeconfig --region ${CLUSTER_REGION} --name ${CLUSTER_NAME}'
-                        withCredentials([file(credentialsId: 'KUBE_CONFIG_CRED', variable: 'KUBECONFIG')]) {
-                            sh 'kubectl apply -f lana-bot-deployment.yaml'
-                            sh 'chown jenkins:jenkins lana-bot-deployment.yaml'
-                            LANABOT_DEPLOYMENT = sh(script: 'cat lana-bot-deployment.yaml', returnStdout: true).trim()
-                        }
+    stage('Update File') {
+        steps {
+            script {
+                sh "sed -i 's|image: .*|image: ${ECR_REGISTRY}/lana_bot_container:${IMAGE_TAG}|' lana-bot-deployment.yaml"
+            }
+        }
+    }
+
+    stage('Deploy to K8s') {
+        steps {
+            script {
+                withCredentials([aws(credentialsId: AWS_CREDENTIALS_ID, accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    sh 'aws eks update-kubeconfig --region ${CLUSTER_REGION} --name ${CLUSTER_NAME}'
+                    withCredentials([file(credentialsId: 'KUBE_CONFIG_CRED', variable: 'KUBECONFIG')]) {
+                        sh 'kubectl apply -f lana-bot-deployment.yaml' //--validate=false'
                     }
                 }
             }
         }
-
-
-
-        stage('Clone Repository lanabot-k8s') {
-            steps {
-                script {
-
-                   dir('./lanabot-k8s') {
-                      git branch: 'main', credentialsId: 'github', url: 'https://github.com/mohmaedabubaker09/lanabot-k8s.git'
-                      sh 'ls -la'
-                   }
-                }
-            }
-        }
+    }
 
 //         stage('Update GitHub') {
 //             steps {
 //                 script {
 //                     withCredentials([usernamePassword(credentialsId: GITHUB_CREDENTIALS_ID, usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PASSWORD')]) {
-//                         dir('./lanabot-k8s') {
+//                         dir('./') {
 //                             sh 'git config user.email "mohmaedabubaker09@gmail.com"'
 //                             sh 'git config user.name "Mohamed Abu Baker"'
-//                             sh 'ls -la'
-// //                             sh 'echo "${env.LANABOT_DEPLOYMENT}" > lana-bot-deployment.yaml'
-//                             sh 'echo "${LANABOT_DEPLOYMENT}" | tee lana-bot-deployment.yaml'
-//                             sh 'chown jenkins:jenkins lana-bot-deployment.yaml'
 //                             sh 'git add lana-bot-deployment.yaml'
 //                             sh 'git commit -m "Committing a new version of lana-bot-deployment.yaml"'
-//
-//                             def remoteExists = sh(script: 'git remote -v | grep origin', returnStatus: true).isSuccess()
-//
-//
-//                             if (remoteExists) {
-//                                 sh "git push https://${GITHUB_USERNAME}:${GITHUB_PASSWORD}@github.com/mohmaedabubaker09/lanabot-k8s.git main"
-//                             } else {
-//                                 sh "git remote add origin https://${GITHUB_USERNAME}:${GITHUB_PASSWORD}@github.com/mohmaedabubaker09/lanabot-k8s.git"
-//                                 sh 'git push -u origin main'
-//                             }
-//                             sh 'ls ../ -la'
+//                             sh 'git remote add origin https://github.com/mohmaedabubaker09/lanabot-k8s.git'
+//                             sh 'git push -u origin main'
 //                         }
 //                     }
 //                 }
@@ -117,36 +95,88 @@ pipeline {
 //         }
 //     }
 
-        stage('Update GitHub') {
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: GITHUB_CREDENTIALS_ID, usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PASSWORD')]) {
-                        dir('./lanabot-k8s') {
-                            sh 'git config user.email "mohmaedabubaker09@gmail.com"'
-                            sh 'git config user.name "Mohamed Abu Baker"'
-                            sh 'ls -la'
-                            sh 'chmod +w lana-bot-deployment.yaml'  // Add this line to give write permissions
-                            sh 'echo "${LANABOT_DEPLOYMENT}" | tee lana-bot-deployment.yaml'
-                            sh 'chown jenkins:jenkins lana-bot-deployment.yaml'
-                        }
-                        sh 'git add lana-bot-deployment.yaml'
-                        sh 'git commit -m "Committing a new version of lana-bot-deployment.yaml"'
+    stage('Clone Repository lanabot-k8s') {
+        steps {
+            script {
+                git 'https://github.com/mohmaedabubaker09/lanabot-k8s.git'
+            }
+        }
+    }
 
-                        def remoteExists = sh(script: 'git remote -v | grep origin', returnStatus: true).isSuccess()
+//         stage('Update GitHub') {
+//             steps {
+//                 script {
+//                     withCredentials([usernamePassword(credentialsId: GITHUB_CREDENTIALS_ID, usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PASSWORD')]) {
+//                         dir('./') {
+//                             sh 'git config user.email "mohmaedabubaker09@gmail.com"'
+//                             sh 'git config user.name "Mohamed Abu Baker"'
+//                             sh 'git add lana-bot-deployment.yaml'
+//                             sh 'git commit -m "Committing a new version of lana-bot-deployment.yaml"'
+//
+//                             def remoteExists = sh(script: 'git remote -v | grep origin', returnStatus: true).isSuccess()
+//
+//                             if (remoteExists) {
+//                                 sh 'git push origin main'
+//                             } else {
+//                                 sh 'git remote add origin https://github.com/mohmaedabubaker09/lanabot-k8s.git'
+//                                 sh 'git push -u origin main'
+//                             }
+//                         }
+//                     }
+//                 }
+//             }
+//         }
 
-                        if (remoteExists) {
-                            sh "git push https://${GITHUB_USERNAME}:${GITHUB_PASSWORD}@github.com/mohmaedabubaker09/lanabot-k8s.git main"
-                        } else {
-                            sh "git remote add origin https://${GITHUB_USERNAME}:${GITHUB_PASSWORD}@github.com/mohmaedabubaker09/lanabot-k8s.git"
-                            sh 'git push -u origin main'
-                        }
-                        sh 'ls ../ -la'
+    stage('Update GitHub') {
+        steps {
+            script {
+                sh 'git config user.email "mohmaedabubaker09@gmail.com"'
+                sh 'git config user.name "Mohamed Abu Baker"'
+
+                sh 'git add lana-bot-deployment.yaml'
+                sh 'git commit -m "Committing a new version of lana-bot-deployment.yaml"'
+
+                def remoteExists = sh(script: 'git remote -v | grep origin', returnStatus: true).isSuccess()
+
+                withCredentials([usernamePassword(credentialsId: GITHUB_CREDENTIALS_ID, usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PASSWORD')]) {
+                    if (remoteExists) {
+                        sh "git push https://${GITHUB_USERNAME}:${GITHUB_PASSWORD}@github.com/mohmaedabubaker09/lanabot-k8s.git main"
+                    } else {
+                        sh "git remote add origin https://${GITHUB_USERNAME}:${GITHUB_PASSWORD}@github.com/mohmaedabubaker09/lanabot-k8s.git"
+                        sh 'git push -u origin main'
                     }
                 }
             }
         }
+    }
 
 
+
+//         stage('Update GitHub') {
+//             steps {
+//                 script {
+//                     // Set Git configurations
+//                     sh 'git config user.email "mohmaedabubaker09@gmail.com"'
+//                     sh 'git config user.name "Mohamed Abu Baker"'
+//
+//                     // Add and commit changes
+//                     sh 'git add lana-bot-deployment.yaml'
+//                     sh 'git commit -m "Committing a new version of lana-bot-deployment.yaml"'
+//
+//                     // Check if 'origin' remote exists
+//                     def remoteExists = sh(script: 'git remote -v | grep origin', returnStatus: true).isSuccess()
+//
+//                     // Push changes to GitHub
+//                     if (remoteExists) {
+//                         sh 'git push origin main'
+//                     } else {
+//                         // If 'origin' remote doesn't exist, add it and push changes
+//                         sh 'git remote add origin https://github.com/mohmaedabubaker09/lanabot-k8s.git'
+//                         sh 'git push -u origin main'
+//                     }
+//                 }
+//             }
+//         }
 
 
     post {
