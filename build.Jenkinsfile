@@ -44,18 +44,35 @@ pipeline {
             }
         }
 
+//         stage('Deploy to K8s') {
+//             steps {
+//                 script {
+//                     withCredentials([aws(credentialsId: AWS_CREDENTIALS_ID, accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+//                         sh 'aws eks update-kubeconfig --region ${CLUSTER_REGION} --name ${CLUSTER_NAME}'
+//                         withCredentials([file(credentialsId: 'KUBE_CONFIG_CRED', variable: 'KUBECONFIG')]) {
+//                             sh 'kubectl apply -f lana-bot-deployment.yaml' //--validate=false'
+//                             LANABOT_DEPLOYMENT = sh(script: 'cat lana-bot-deployment.yaml', returnStdout: true).trim()
+//                     }
+//                 }
+//             }
+//         }
+
         stage('Deploy to K8s') {
             steps {
                 script {
                     withCredentials([aws(credentialsId: AWS_CREDENTIALS_ID, accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                         sh 'aws eks update-kubeconfig --region ${CLUSTER_REGION} --name ${CLUSTER_NAME}'
                         withCredentials([file(credentialsId: 'KUBE_CONFIG_CRED', variable: 'KUBECONFIG')]) {
-                            sh 'kubectl apply -f lana-bot-deployment.yaml' //--validate=false'
+                            sh 'kubectl apply -f lana-bot-deployment.yaml'
+                            sh 'chown jenkins:jenkins lana-bot-deployment.yaml'
                             LANABOT_DEPLOYMENT = sh(script: 'cat lana-bot-deployment.yaml', returnStdout: true).trim()
+                        }
                     }
                 }
             }
         }
+
+
 
         stage('Clone Repository lanabot-k8s') {
             steps {
