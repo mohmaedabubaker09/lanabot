@@ -71,7 +71,7 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: GITHUB_CREDENTIALS_ID, usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PASSWORD')]) {
                         sh 'git config user.email "mohmaedabubaker09@gmail.com"'
                         sh 'git config user.name "Mohamed Abu Baker"'
-
+                        sh 'ls -la'
                         sh 'git add lana-bot-deployment.yaml'
                         sh 'git commit -m "Committing a new version of lana-bot-deployment.yaml"'
 
