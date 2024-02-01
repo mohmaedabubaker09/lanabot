@@ -60,9 +60,10 @@ pipeline {
         stage('Clone Repository lanabot-k8s') {
             steps {
                 script {
-//                    sh 'mkdir ./lanabot-k8s'
+
                    dir('./lanabot-k8s') {
                       git branch: 'main', credentialsId: 'github', url: 'https://github.com/mohmaedabubaker09/lanabot-k8s.git'
+                      sh 'cp ../lana-bot-deployment.yaml ./'
                       sh 'ls -la'
                    }
                 }
@@ -77,7 +78,7 @@ pipeline {
                             sh 'git config user.email "mohmaedabubaker09@gmail.com"'
                             sh 'git config user.name "Mohamed Abu Baker"'
                             sh 'ls -la'
-                            sh 'cp ../lana-bot-deployment.yaml ./'
+
                             sh 'git add lana-bot-deployment.yaml'
                             sh 'git commit -m "Committing a new version of lana-bot-deployment.yaml"'
 
