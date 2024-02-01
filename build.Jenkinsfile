@@ -73,23 +73,25 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: GITHUB_CREDENTIALS_ID, usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PASSWORD')]) {
-                        sh 'git config user.email "mohmaedabubaker09@gmail.com"'
-                        sh 'git config user.name "Mohamed Abu Baker"'
-                        sh 'ls -la'
-                        // sh 'cp ../lana-bot-deployment.yaml ./'
-                        sh 'git add lana-bot-deployment.yaml'
-                        sh 'git commit -m "Committing a new version of lana-bot-deployment.yaml"'
+                        dir('./lanabot-k8s') {
+                            sh 'git config user.email "mohmaedabubaker09@gmail.com"'
+                            sh 'git config user.name "Mohamed Abu Baker"'
+                            sh 'ls -la'
+                            sh 'cp ../lana-bot-deployment.yaml ./'
+                            sh 'git add lana-bot-deployment.yaml'
+                            sh 'git commit -m "Committing a new version of lana-bot-deployment.yaml"'
 
-                        def remoteExists = sh(script: 'git remote -v | grep origin', returnStatus: true).isSuccess()
+                            def remoteExists = sh(script: 'git remote -v | grep origin', returnStatus: true).isSuccess()
 
 
-                        if (remoteExists) {
-                            sh "git push https://${GITHUB_USERNAME}:${GITHUB_PASSWORD}@github.com/mohmaedabubaker09/lanabot-k8s.git main"
-                        } else {
-                            sh "git remote add origin https://${GITHUB_USERNAME}:${GITHUB_PASSWORD}@github.com/mohmaedabubaker09/lanabot-k8s.git"
-                            sh 'git push -u origin main'
+                            if (remoteExists) {
+                                sh "git push https://${GITHUB_USERNAME}:${GITHUB_PASSWORD}@github.com/mohmaedabubaker09/lanabot-k8s.git main"
+                            } else {
+                                sh "git remote add origin https://${GITHUB_USERNAME}:${GITHUB_PASSWORD}@github.com/mohmaedabubaker09/lanabot-k8s.git"
+                                sh 'git push -u origin main'
+                            }
+                            sh 'ls ../ -la'
                         }
-                        sh 'ls ../ -la'
                     }
                 }
             }
