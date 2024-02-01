@@ -52,7 +52,6 @@ pipeline {
                         withCredentials([file(credentialsId: 'KUBE_CONFIG_CRED', variable: 'KUBECONFIG')]) {
                             sh 'kubectl apply -f lana-bot-deployment.yaml' //--validate=false'
                             LANABOT_DEPLOYMENT = sh(script: 'cat lana-bot-deployment.yaml', returnStdout: true).trim()
-                            sh 'chown jenkins:jenkins lana-bot-deployment.yaml'                        }
                     }
                 }
             }
@@ -78,8 +77,9 @@ pipeline {
                             sh 'git config user.email "mohmaedabubaker09@gmail.com"'
                             sh 'git config user.name "Mohamed Abu Baker"'
                             sh 'ls -la'
-                            sh 'echo "${env.LANABOT_DEPLOYMENT}" > lana-bot-deployment.yaml'
-
+//                             sh 'echo "${env.LANABOT_DEPLOYMENT}" > lana-bot-deployment.yaml'
+                            sh 'echo "${LANABOT_DEPLOYMENT}" | tee lana-bot-deployment.yaml'
+                            sh 'chown jenkins:jenkins lana-bot-deployment.yaml'                        }
                             sh 'git add lana-bot-deployment.yaml'
                             sh 'git commit -m "Committing a new version of lana-bot-deployment.yaml"'
 
