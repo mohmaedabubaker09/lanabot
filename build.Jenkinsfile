@@ -61,7 +61,7 @@ pipeline {
             steps {
                 script {
                    sh 'mkdir ./lanabot-k8s'
-                   dir('./lanabot-k8s) {
+                   dir('./lanabot-k8s') {
                       git branch: 'main', credentialsId: 'github', url: 'https://github.com/mohmaedabubaker09/lanabot-k8s.git'
                    }
                 }
