@@ -50,7 +50,7 @@ pipeline {
                         sh 'aws eks update-kubeconfig --region ${CLUSTER_REGION} --name ${CLUSTER_NAME}'
                         withCredentials([file(credentialsId: 'KUBE_CONFIG_CRED', variable: 'KUBECONFIG')]) {
                             sh 'kubectl apply -f lana-bot-deployment.yaml' //--validate=false'
-                            sh 'ls -al'
+
                         }
                     }
                 }
@@ -60,8 +60,10 @@ pipeline {
         stage('Clone Repository lanabot-k8s') {
             steps {
                 script {
-                    // git 'https://github.com/mohmaedabubaker09/lanabot-k8s.git'
-                    git branch: 'main', credentialsId: 'github', url: 'https://github.com/mohmaedabubaker09/lanabot-k8s.git'
+                   sh 'mkdir ./lanabot-k8s'
+                   dir('./lanabot-k8s) {
+                      git branch: 'main', credentialsId: 'github', url: 'https://github.com/mohmaedabubaker09/lanabot-k8s.git'
+                   }
                 }
             }
         }
@@ -73,7 +75,7 @@ pipeline {
                         sh 'git config user.email "mohmaedabubaker09@gmail.com"'
                         sh 'git config user.name "Mohamed Abu Baker"'
                         sh 'ls -la'
-                        sh 'git add lana-bot-deployment.yaml'
+                        sh 'git add ../lana-bot-deployment.yaml'
                         sh 'git commit -m "Committing a new version of lana-bot-deployment.yaml"'
 
                         def remoteExists = sh(script: 'git remote -v | grep origin', returnStatus: true).isSuccess()
@@ -85,6 +87,7 @@ pipeline {
                             sh "git remote add origin https://${GITHUB_USERNAME}:${GITHUB_PASSWORD}@github.com/mohmaedabubaker09/lanabot-k8s.git"
                             sh 'git push -u origin main'
                         }
+                        sh 'ls ../ -la'
                     }
                 }
             }
