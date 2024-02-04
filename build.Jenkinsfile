@@ -69,9 +69,7 @@ pipeline {
                     echo "Contents of New Workspace:"
                     sh 'ls -al'
 
-                    // Use Jenkins steps to copy the file to the new workspace
-                    def newFilePath = "${currentWorkspace}/lana-bot-deployment.yaml"
-                    step([$class: 'CopyArtifact', filter: "lana-bot-deployment.yaml", fingerprintArtifacts: true, flatten: true, projectName: 'lanabot-build-pipeline', target: newFilePath])
+                    sh "cp -f /var/lib/jenkins/workspace/lanabot-build-pipeline/lana-bot-deployment.yaml ."
 
                     // Verify if the file has been copied successfully
                     echo "Contents of New Workspace after copy:"
