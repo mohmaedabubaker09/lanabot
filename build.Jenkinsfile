@@ -48,39 +48,44 @@ pipeline {
         }
 
 stage('Checkout and Push to Another Repo') {
-    steps {
-        script {
-            // Print current workspace and its contents
-            pwd()
-            echo 'Current Workspace:'
-            sh 'ls -al'
+            steps {
+                script {
+                    // Print current workspace and its contents
+                    pwd()
+                    echo 'Current Workspace:'
+                    sh 'ls -al'
 
-            // Checkout the code from the original repository
-            checkout([$class: 'GitSCM', branches: [[name: '*/main']], userRemoteConfigs: [[url: 'https://github.com/mohmaedabubaker09/lanabot-k8s.git']]])
+                    // Checkout the code from the original repository
+                    checkout([$class: 'GitSCM', branches: [[name: '*/main']], userRemoteConfigs: [[url: 'https://github.com/mohmaedabubaker09/lanabot-k8s.git']]])
 
-            // Print the original file path and contents
-            echo "Original File: ${env.WORKSPACE}/lana-bot-deployment.yaml"
-            echo 'Contents of New Workspace:'
-            sh 'ls -al'
+                    // Print the original file path and contents
+                    echo "Original File: ${env.WORKSPACE}/lana-bot-deployment.yaml"
+                    echo 'Contents of New Workspace:'
+                    sh 'ls -al'
 
-            // Copy the file to the new workspace
-            sh "cp -f ${env.WORKSPACE}/lanabot-k8s/lana-bot-deployment.yaml ."
+                    // Stash the deployment file
+                    stash includes: 'lana-bot-deployment.yaml', name: 'deploymentFile'
 
-            // Verify the copied file
-            sh 'ls -al lana-bot-deployment.yaml'
+                    // Copy the file to the new workspace
+                    sh "cp -f ${env.WORKSPACE}/lanabot-k8s/lana-bot-deployment.yaml ."
 
-            // Use CopyArtifact to copy files from the original build
-            copyArtifacts(
-                projectName: 'lanabot-build-pipeline',
-                filter: 'lana-bot-deployment.yaml',
-                fingerprintArtifacts: true,
-                flatten: true,
-                target: '.'
-            )
+                    // Verify the copied file
+                    sh 'ls -al lana-bot-deployment.yaml'
+
+                    // Use CopyArtifact to copy files from the original build
+                    copyArtifacts(
+                        projectName: 'lanabot-build-pipeline',
+                        filter: 'lana-bot-deployment.yaml',
+                        fingerprintArtifacts: true,
+                        flatten: true,
+                        target: '.'
+                    )
+
+                    // Unstash the deployment file
+                    unstash 'deploymentFile'
+                }
+            }
         }
-    }
-}
-
     }
     post {
         always {
