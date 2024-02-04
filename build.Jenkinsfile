@@ -45,14 +45,13 @@ pipeline {
                             sh "sed -i 's|image: .*|image: ${ECR_REGISTRY}/lana_bot_container:${IMAGE_TAG}|' lana-bot-deployment.yaml"
                             sh 'kubectl apply -f lana-bot-deployment.yaml'
                             // Stash the deployment file
-                            stash includes: 'lana-bot-deployment.yaml', name: 'deploymentFile'
+                            //stash includes: 'lana-bot-deployment.yaml', name: 'deploymentFile'
                         }
                     }
                 }
             }
         }
 
-stages {
         stage('Checkout and Push to Another Repo') {
             steps {
                 script {
