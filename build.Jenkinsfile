@@ -41,6 +41,8 @@ pipeline {
                         withCredentials([file(credentialsId: 'KUBE_CONFIG_CRED', variable: 'KUBECONFIG')]) {
                             sh "sed -i 's|image: .*|image: ${ECR_REGISTRY}/lana_bot_container:${IMAGE_TAG}|' lana-bot-deployment.yaml"
                             sh 'kubectl apply -f lana-bot-deployment.yaml'
+                            // Stash the deployment file
+                            stash includes: 'lana-bot-deployment.yaml', name: 'deploymentFile'
                         }
                     }
                 }
@@ -63,8 +65,7 @@ stage('Checkout and Push to Another Repo') {
                     echo 'Contents of New Workspace:'
                     sh 'ls -al'
 
-                    // Stash the deployment file
-                    stash includes: 'lana-bot-deployment.yaml', name: 'deploymentFile'
+
 
                     // Copy the file to the new workspace
                     sh "cp -f ${env.WORKSPACE}/lanabot-k8s/lana-bot-deployment.yaml ."
