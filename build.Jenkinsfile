@@ -69,7 +69,8 @@ pipeline {
                     echo "Contents of New Workspace:"
                     sh 'ls -al'
 
-                    if (fileExists("${currentWorkspace}/lana-bot-deployment.yaml") || fileExists("lana-bot-deployment.yaml")) {
+                    def originalFile = new File("${currentWorkspace}/lana-bot-deployment.yaml")
+                    if (originalFile.exists()) {
                         // Copy the file to the new workspace
                         sh "cp ${currentWorkspace}/lana-bot-deployment.yaml ."
 
@@ -84,6 +85,7 @@ pipeline {
                     } else {
                         error "lana-bot-deployment.yaml not found in the original workspace."
                     }
+
                 }
             }
          }
