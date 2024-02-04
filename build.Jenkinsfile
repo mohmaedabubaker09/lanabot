@@ -77,6 +77,8 @@ pipeline {
                     // Verify the written file
                     sh "ls -al ${DEPLOYMENT_FILE_NAME}"
                     sh '''
+                        git config --local user.email "mohmaedabubaker09@gmail.com"'
+                        git config --local user.name "Mohamed Abu Baker"'
                         git add .
                         git commit -m ${DEPLOYMENT_FILE_NAME}
 
