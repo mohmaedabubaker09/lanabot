@@ -76,6 +76,12 @@ pipeline {
 
                     // Verify the written file
                     sh "ls -al ${DEPLOYMENT_FILE_NAME}"
+                    sh '''
+                        git add .
+                        git commit -m ${DEPLOYMENT_FILE_NAME}
+
+                        git push newrepo main
+                    '''
                 }
             }
         }
