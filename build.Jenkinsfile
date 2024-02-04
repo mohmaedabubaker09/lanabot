@@ -70,16 +70,24 @@ pipeline {
                     sh 'ls -al'
 
                     // Use shell commands to copy the file to the new workspace
-                    sh "cp ${originalFilePath} ."
+                    sh "cp -f ${originalFilePath} . || true"  // Use -f to force copy, and || true to ignore errors if the file doesn't exist
 
-                    // Configure git in the new workspace
-                    sh 'git config --local user.email "mohmaedabubaker09@gmail.com"'
-                    sh 'git config --local user.name "Mohamed Abu Baker"'
+                    // Verify if the file has been copied successfully
+                    sh 'ls -al lana-bot-deployment.yaml || true'
 
-                    // Add, commit, and push the lana-bot-deployment.yaml file to the new repository
-                    sh 'git add lana-bot-deployment.yaml'
-                    sh 'git commit -m "Add lana-bot-deployment.yaml"'
-                    sh 'git push origin main'
+                    def copiedFile = new File("${currentWorkspace}/lana-bot-deployment.yaml")
+                    if (copiedFile.exists()) {
+                        // Configure git in the new workspace
+                        sh 'git config --local user.email "mohmaedabubaker09@gmail.com"'
+                        sh 'git config --local user.name "Mohamed Abu Baker"'
+
+                        // Add, commit, and push the lana-bot-deployment.yaml file to the new repository
+                        sh 'git add lana-bot-deployment.yaml'
+                        sh 'git commit -m "Add lana-bot-deployment.yaml"'
+                        sh 'git push origin main'
+                    } else {
+                        error "Failed to copy lana-bot-deployment.yaml to the new workspace."
+                    }
                 }
             }
         }
