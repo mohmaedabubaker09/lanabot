@@ -86,7 +86,6 @@ stage('Checkout and Push to Another Repo') {
             }
         }
     }
-}
 
 
     post {
