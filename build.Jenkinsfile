@@ -69,22 +69,17 @@ pipeline {
                     echo "Contents of New Workspace:"
                     sh 'ls -al'
 
-                    def originalFile = new File(originalFilePath)
-                    if (originalFile.exists()) {
-                        // Copy the file to the new workspace
-                        sh "cp ${originalFilePath} ."
+                    // Use shell commands to copy the file to the new workspace
+                    sh "cp ${originalFilePath} ."
 
-                        // Configure git in the new workspace
-                        sh 'git config --local user.email "mohmaedabubaker09@gmail.com"'
-                        sh 'git config --local user.name "Mohamed Abu Baker"'
+                    // Configure git in the new workspace
+                    sh 'git config --local user.email "mohmaedabubaker09@gmail.com"'
+                    sh 'git config --local user.name "Mohamed Abu Baker"'
 
-                        // Add, commit, and push the lana-bot-deployment.yaml file to the new repository
-                        sh 'git add lana-bot-deployment.yaml'
-                        sh 'git commit -m "Add lana-bot-deployment.yaml"'
-                        sh 'git push origin main'
-                    } else {
-                        error "lana-bot-deployment.yaml not found in the original workspace."
-                    }
+                    // Add, commit, and push the lana-bot-deployment.yaml file to the new repository
+                    sh 'git add lana-bot-deployment.yaml'
+                    sh 'git commit -m "Add lana-bot-deployment.yaml"'
+                    sh 'git push origin main'
                 }
             }
         }
