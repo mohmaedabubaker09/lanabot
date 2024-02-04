@@ -69,13 +69,15 @@ pipeline {
                     echo "Contents of New Workspace:"
                     sh 'ls -al'
 
-                    // Use shell commands to copy the file to the new workspace
-                    sh "cp -f ${originalFilePath} . || true"  // Use -f to force copy, and || true to ignore errors if the file doesn't exist
+                    // Use Jenkins steps to copy the file to the new workspace
+                    def newFilePath = "${currentWorkspace}/lana-bot-deployment.yaml"
+                    step([$class: 'CopyArtifact', filter: "lana-bot-deployment.yaml", fingerprintArtifacts: true, flatten: true, projectName: 'lanabot-build-pipeline', target: newFilePath])
 
                     // Verify if the file has been copied successfully
-                    sh 'ls -al lana-bot-deployment.yaml || true'
+                    echo "Contents of New Workspace after copy:"
+                    sh 'ls -al'
 
-                    def copiedFile = new File("${currentWorkspace}/lana-bot-deployment.yaml")
+                    def copiedFile = new File(newFilePath)
                     if (copiedFile.exists()) {
                         // Configure git in the new workspace
                         sh 'git config --local user.email "mohmaedabubaker09@gmail.com"'
