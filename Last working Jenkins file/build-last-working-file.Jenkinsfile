@@ -52,19 +52,6 @@ pipeline {
                 }
             }
         }
-
-        stage('Checkout and Push to Another Repo') {
-            steps {
-                script {
-                    checkout([$class: 'GitSCM', branches: [[name: 'main']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'SubmoduleOption', disableSubmodules: false, parentCredentials: true, recursiveSubmodules: false, reference: '', trackingSubmodules: false]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'github', url: 'https://github.com/mohmaedabubaker09/lanabot-k8s.git']]])
-                    sh 'git config --local user.email "mohmaedabubaker09@gmail.com"'
-                    sh 'git config --local user.name "Mohamed Abu Baker"'
-                    s00h 'git add lana-bot-deployment.yaml'
-                    sh 'git commit -m "Add lana-bot-deployment.yaml"'
-                    sh 'git push origin main'
-                }
-            }
-        }
     }
 
     post {
