@@ -10,6 +10,9 @@ pipeline {
         KUBE_CONFIG_CRED = 'KUBE_CONFIG_CRED'
         CLUSTER_NAME = "k8s-main"
         CLUSTER_REGION = "us-east-1"
+        DEPLOYMENT_FILE_NAME = 'lana-bot-deployment.yaml'
+        DEPLOYMENT_FILE_PATH = "${env.WORKSPACE}/lanabot-k8s/${DEPLOYMENT_FILE_NAME}"
+
     }
 
     stages {
@@ -49,7 +52,8 @@ pipeline {
             }
         }
 
-stage('Checkout and Push to Another Repo') {
+stages {
+        stage('Checkout and Push to Another Repo') {
             steps {
                 script {
                     // Print current workspace and its contents
@@ -57,33 +61,22 @@ stage('Checkout and Push to Another Repo') {
                     echo 'Current Workspace:'
                     sh 'ls -al'
 
+                    // Read the content of the deployment file into a variable
+                    def deploymentFileContent = readFile(file: DEPLOYMENT_FILE_PATH).trim()
+
                     // Checkout the code from the original repository
                     checkout([$class: 'GitSCM', branches: [[name: '*/main']], userRemoteConfigs: [[url: 'https://github.com/mohmaedabubaker09/lanabot-k8s.git']]])
 
                     // Print the original file path and contents
-                    echo "Original File: ${env.WORKSPACE}/lana-bot-deployment.yaml"
+                    echo "Original File: ${DEPLOYMENT_FILE_PATH}"
                     echo 'Contents of New Workspace:'
                     sh 'ls -al'
 
+                    // Write the content back to the new workspace
+                    writeFile(file: DEPLOYMENT_FILE_NAME, text: deploymentFileContent)
 
-
-                    // Copy the file to the new workspace
-                    sh "cp -f ${env.WORKSPACE}/lanabot-k8s/lana-bot-deployment.yaml ."
-
-                    // Verify the copied file
-                    sh 'ls -al lana-bot-deployment.yaml'
-
-                    // Use CopyArtifact to copy files from the original build
-                    copyArtifacts(
-                        projectName: 'lanabot-build-pipeline',
-                        filter: 'lana-bot-deployment.yaml',
-                        fingerprintArtifacts: true,
-                        flatten: true,
-                        target: '.'
-                    )
-
-                    // Unstash the deployment file
-                    unstash 'deploymentFile'
+                    // Verify the written file
+                    sh "ls -al ${DEPLOYMENT_FILE_NAME}"
                 }
             }
         }
