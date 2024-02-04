@@ -47,46 +47,46 @@ pipeline {
             }
         }
 
-stage('Checkout and Push to Another Repo') {
-    steps {
-        script {
-            // Save the current workspace directory
-            def currentWorkspace = pwd()
-            echo "Current Workspace: ${currentWorkspace}"
+        stage('Checkout and Push to Another Repo') {
+            steps {
+                script {
+                    // Save the current workspace directory
+                    def currentWorkspace = pwd()
+                    echo "Current Workspace: ${currentWorkspace}"
 
-            // Print the contents of the current workspace
-            echo "Contents of Current Workspace:"
-            sh 'ls -al'
+                    // Print the contents of the current workspace
+                    echo "Contents of Current Workspace:"
+                    sh 'ls -al'
 
-            // Checkout to the new repository's main branch
-            checkout([$class: 'GitSCM', branches: [[name: 'main']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'SubmoduleOption', disableSubmodules: false, parentCredentials: true, recursiveSubmodules: false, reference: '', trackingSubmodules: false]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'github', url: 'https://github.com/mohmaedabubaker09/lanabot-k8s.git']]])
+                    // Checkout to the new repository's main branch
+                    checkout([$class: 'GitSCM', branches: [[name: 'main']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'SubmoduleOption', disableSubmodules: false, parentCredentials: true, recursiveSubmodules: false, reference: '', trackingSubmodules: false]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'github', url: 'https://github.com/mohmaedabubaker09/lanabot-k8s.git']]])
 
-            // Check if the file exists in the original workspace
-            def originalFile = "${currentWorkspace}/lana-bot-deployment.yaml"
-            echo "Original File: ${originalFile}"
+                    // Check if the file exists in the original workspace
+                    def originalFile = "${currentWorkspace}/lana-bot-deployment.yaml"
+                    echo "Original File: ${originalFile}"
 
-            // Print the contents of the new workspace after checkout
-            echo "Contents of New Workspace:"
-            sh 'ls -al'
+                    // Print the contents of the new workspace after checkout
+                    echo "Contents of New Workspace:"
+                    sh 'ls -al'
 
-            if (fileExists(originalFile)) {
-                // Copy the file to the new workspace
-                sh "cp ${originalFile} lana-bot-deployment.yaml"
+                    if (fileExists(originalFile)) {
+                        // Copy the file to the new workspace
+                        sh "cp ${originalFile} lana-bot-deployment.yaml"
 
-                // Configure git in the new workspace
-                sh 'git config --local user.email "mohmaedabubaker09@gmail.com"'
-                sh 'git config --local user.name "Mohamed Abu Baker"'
+                        // Configure git in the new workspace
+                        sh 'git config --local user.email "mohmaedabubaker09@gmail.com"'
+                        sh 'git config --local user.name "Mohamed Abu Baker"'
 
-                // Add, commit, and push the lana-bot-deployment.yaml file to the new repository
-                sh 'git add lana-bot-deployment.yaml'
-                sh 'git commit -m "Add lana-bot-deployment.yaml"'
-                sh 'git push origin main'
-            } else {
-                error "lana-bot-deployment.yaml not found in the original workspace."
+                        // Add, commit, and push the lana-bot-deployment.yaml file to the new repository
+                        sh 'git add lana-bot-deployment.yaml'
+                        sh 'git commit -m "Add lana-bot-deployment.yaml"'
+                        sh 'git push origin main'
+                    } else {
+                        error "lana-bot-deployment.yaml not found in the original workspace."
+                    }
+                }
             }
-        }
-    }
-
+         }
 
     post {
         always {
@@ -94,4 +94,3 @@ stage('Checkout and Push to Another Repo') {
         }
     }
 }
-
