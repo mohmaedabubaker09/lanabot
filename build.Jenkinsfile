@@ -50,44 +50,33 @@ pipeline {
         stage('Checkout and Push to Another Repo') {
             steps {
                 script {
-                    // Save the current workspace directory
-                    def currentWorkspace = pwd()
-                    echo "Current Workspace: ${currentWorkspace}"
-
-                    // Print the contents of the current workspace
-                    echo "Contents of Current Workspace:"
+                    // Print current workspace and its contents
+                    pwd()
+                    echo 'Current Workspace:'
                     sh 'ls -al'
 
-                    // Checkout to the new repository's main branch
-                    checkout([$class: 'GitSCM', branches: [[name: 'main']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'SubmoduleOption', disableSubmodules: false, parentCredentials: true, recursiveSubmodules: false, reference: '', trackingSubmodules: false]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'github', url: 'https://github.com/mohmaedabubaker09/lanabot-k8s.git']]])
+                    // Checkout the code from the original repository
+                    checkout([$class: 'GitSCM', branches: [[name: '*/main']], userRemoteConfigs: [[url: 'https://github.com/mohmaedabubaker09/lanabot-k8s.git']]])
 
-                    // Check if the file exists in the original workspace
-                    def originalFilePath = "${currentWorkspace}/lana-bot-deployment.yaml"
-                    echo "Original File: ${originalFilePath}"
-
-                    // Print the contents of the new workspace after checkout
-                    echo "Contents of New Workspace:"
+                    // Print the original file path and contents
+                    echo "Original File: ${env.WORKSPACE}/lana-bot-deployment.yaml"
+                    echo 'Contents of New Workspace:'
                     sh 'ls -al'
 
-                    sh "cp -f /var/lib/jenkins/workspace/lanabot-build-pipeline/lana-bot-deployment.yaml ."
+                    // Copy the file to the new workspace
+                    sh "cp -f ${env.WORKSPACE}/lana-bot-deployment.yaml ."
 
-                    // Verify if the file has been copied successfully
-                    echo "Contents of New Workspace after copy:"
-                    sh 'ls -al'
+                    // Verify the copied file
+                    sh 'ls -al lana-bot-deployment.yaml'
 
-                    def copiedFile = new File(newFilePath)
-                    if (copiedFile.exists()) {
-                        // Configure git in the new workspace
-                        sh 'git config --local user.email "mohmaedabubaker09@gmail.com"'
-                        sh 'git config --local user.name "Mohamed Abu Baker"'
-
-                        // Add, commit, and push the lana-bot-deployment.yaml file to the new repository
-                        sh 'git add lana-bot-deployment.yaml'
-                        sh 'git commit -m "Add lana-bot-deployment.yaml"'
-                        sh 'git push origin main'
-                    } else {
-                        error "Failed to copy lana-bot-deployment.yaml to the new workspace."
-                    }
+                    // Use CopyArtifact to copy files from the original build
+                    copyArtifacts(
+                        projectName: 'lanabot-build-pipeline',
+                        filter: 'lana-bot-deployment.yaml',
+                        fingerprintArtifacts: true,
+                        flatten: true,
+                        target: '.'
+                    )
                 }
             }
         }
