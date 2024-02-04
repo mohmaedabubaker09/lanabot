@@ -69,9 +69,9 @@ pipeline {
                     echo "Contents of New Workspace:"
                     sh 'ls -al'
 
-                    if (fileExists(originalFile)) {
+                    if (fileExists("${currentWorkspace}/lana-bot-deployment.yaml") || fileExists("lana-bot-deployment.yaml")) {
                         // Copy the file to the new workspace
-                        sh "cp ${originalFile} lana-bot-deployment.yaml"
+                        sh "cp ${currentWorkspace}/lana-bot-deployment.yaml ."
 
                         // Configure git in the new workspace
                         sh 'git config --local user.email "mohmaedabubaker09@gmail.com"'
