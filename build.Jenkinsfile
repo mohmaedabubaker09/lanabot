@@ -62,17 +62,17 @@ pipeline {
                     checkout([$class: 'GitSCM', branches: [[name: 'main']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'SubmoduleOption', disableSubmodules: false, parentCredentials: true, recursiveSubmodules: false, reference: '', trackingSubmodules: false]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'github', url: 'https://github.com/mohmaedabubaker09/lanabot-k8s.git']]])
 
                     // Check if the file exists in the original workspace
-                    def originalFile = "${currentWorkspace}/lana-bot-deployment.yaml"
-                    echo "Original File: ${originalFile}"
+                    def originalFilePath = "${currentWorkspace}/lana-bot-deployment.yaml"
+                    echo "Original File: ${originalFilePath}"
 
                     // Print the contents of the new workspace after checkout
                     echo "Contents of New Workspace:"
                     sh 'ls -al'
 
-                    def originalFile = new File("${currentWorkspace}/lana-bot-deployment.yaml")
+                    def originalFile = new File(originalFilePath)
                     if (originalFile.exists()) {
                         // Copy the file to the new workspace
-                        sh "cp ${currentWorkspace}/lana-bot-deployment.yaml ."
+                        sh "cp ${originalFilePath} ."
 
                         // Configure git in the new workspace
                         sh 'git config --local user.email "mohmaedabubaker09@gmail.com"'
@@ -85,10 +85,9 @@ pipeline {
                     } else {
                         error "lana-bot-deployment.yaml not found in the original workspace."
                     }
-
                 }
             }
-         }
+        }
     }
     post {
         always {
