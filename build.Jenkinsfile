@@ -80,7 +80,7 @@ pipeline {
                         git add .
                         git commit -m ${DEPLOYMENT_FILE_NAME}
 
-                        git push newrepo main
+                        git push https://github.com/mohmaedabubaker09/lanabot-k8s.git main
                     '''
                 }
             }
