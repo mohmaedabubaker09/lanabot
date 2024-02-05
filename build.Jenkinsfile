@@ -73,11 +73,13 @@ pipeline {
 
                     sh "ls -al ${DEPLOYMENT_FILE_NAME}"
 
-                    sh '''
-                        git add .
-                        git commit -m ${DEPLOYMENT_FILE_NAME}
-                        git push origin main
-                    '''
+                    withCredentials([usernamePassword(credentialsId: GITHUB_CREDENTIALS_ID, usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
+                        sh '''
+                            git add .
+                            git commit -m ${DEPLOYMENT_FILE_NAME}
+                            git push origin main
+                        '''
+                    }
                 }
             }
         }
