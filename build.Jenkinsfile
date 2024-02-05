@@ -64,7 +64,7 @@ pipeline {
                     sh 'ls -al'
 
                     def deploymentFileContent = readFile(file: DEPLOYMENT_FILE_PATH).trim()
-                    checkout([$class: 'GitSCM', branches: [[name: '*/main']], userRemoteConfigs: [[url: 'https://github.com/mohmaedabubaker09/lanabot-k8s.git', credentialsId: GITHUB_CREDENTIALS_ID]]])
+                    checkout([$class: 'GitSCM', branches: [[name: '*/main']], userRemoteConfigs: [[url: 'git@github.com:mohmaedabubaker09/lanabot-k8s.git', credentialsId: GITHUB_CREDENTIALS_ID]]])
                     echo "Original File: ${DEPLOYMENT_FILE_PATH}"
                     echo 'Contents of New Workspace:'
                     sh 'ls -al'
@@ -90,3 +90,7 @@ pipeline {
         }
     }
 }
+
+
+
+
