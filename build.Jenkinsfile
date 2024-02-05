@@ -55,31 +55,24 @@ pipeline {
         stage('Checkout and Push to Another Repo') {
             steps {
                 script {
-                    // Print current workspace and its contents
                     pwd()
                     echo 'Current Workspace:'
                     sh 'ls -al'
 
-                    // Read the content of the deployment file into a variable
                     def deploymentFileContent = readFile(file: DEPLOYMENT_FILE_PATH).trim()
-
-                    // Checkout the code from the original repository
                     checkout([$class: 'GitSCM', branches: [[name: '*/main']], userRemoteConfigs: [[url: 'https://github.com/mohmaedabubaker09/lanabot-k8s.git']]])
-
-                    // Print the original file path and contents
                     echo "Original File: ${DEPLOYMENT_FILE_PATH}"
                     echo 'Contents of New Workspace:'
                     sh 'ls -al'
 
-                    // Write the content back to the new workspace
                     writeFile(file: DEPLOYMENT_FILE_NAME, text: deploymentFileContent)
 
-                    // Verify the written file
                     sh "ls -al ${DEPLOYMENT_FILE_NAME}"
-                    sh '''
 
+                    sh '''
                         git add .
                         git commit -m ${DEPLOYMENT_FILE_NAME}
+                        git push origin main
                     '''
                 }
             }
