@@ -76,7 +76,7 @@ pipeline {
                     sh '''
                         git add .
                         git commit -m ${DEPLOYMENT_FILE_NAME}
-                        git push origin main --credentials ${GITHUB_CREDENTIALS_ID}
+                        git push origin main
                     '''
                 }
             }
