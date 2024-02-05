@@ -73,7 +73,7 @@ pipeline {
 
                     sh "ls -al ${DEPLOYMENT_FILE_NAME}"
 
-                    withCredentials([usernamePassword(credentialsId: GITHUB_CREDENTIALS_ID, usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
+                    withCredentials([usernamePassword(credentialsId: GITHUB_CREDENTIALS_ID, usernameVariable: 'Username', passwordVariable: 'Password')]) {
                         sh '''
                             git add .
                             git commit -m ${DEPLOYMENT_FILE_NAME}
