@@ -73,11 +73,13 @@ pipeline {
 
                     sh "ls -al ${DEPLOYMENT_FILE_NAME}"
 
-                    withCredentials([usernamePassword(credentialsId: 'github', usernameVariable: 'Username', passwordVariable: 'Password')]) {
+                    withCredentials([usernamePassword(credentialsId: 'github', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
                         sh '''
+                            git config --global user.name "${GIT_USERNAME}"
+                            git config --global user.password "${GIT_PASSWORD}"
                             git add .
                             git commit -m ${DEPLOYMENT_FILE_NAME}
-                            git push origin main
+                            git push --set-upstream origin main
                         '''
                     }
                 }
