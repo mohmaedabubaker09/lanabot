@@ -24,6 +24,14 @@ spec:
         image: lanabot_img:tag
         ports:
         - containerPort: 8443
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8443
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8443
         resources:
           limits:
             cpu: 1000m
@@ -31,4 +39,3 @@ spec:
           requests:
             cpu: 1000m
             memory: 1000Mi
-
