@@ -1,3 +1,6 @@
+def gitCredentials // Define gitCredentials variable outside of the pipeline block
+
+
 pipeline {
     agent any
 
@@ -63,7 +66,7 @@ pipeline {
             }
         }
 
-        stage('Deploy on Agent') {
+stage('Deploy on Agent') {
             agent {
                 label 'agent1'
             }
@@ -71,27 +74,21 @@ pipeline {
                 // Unstash the file on the agent
                 unstash 'yamlFile'
 
-                // Git configuration
-                withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                    // Set Git credentials
-                    def gitCredentials = "${env.GIT_USERNAME}:${env.GIT_PASSWORD}@github.com"
+                // Clone the repository
+                sh "git clone https://${gitCredentials}/mohmaedabubaker09/lanabot-k8s.git"
 
-                    // Clone the repository
-                    sh "git clone https://${gitCredentials}/mohmaedabubaker09/lanabot-k8s.git"
+                // Copy the file to the cloned repository
+                sh "cp lana-bot-deployment.yaml lanabot-k8s/"
 
-                    // Copy the file to the cloned repository
-                    sh "cp lana-bot-deployment.yaml lanabot-k8s/"
-
-                    // Commit and push changes
-                    dir("lanabot-k8s") {
-                        sh "git add ."
-                        sh "git commit -m 'Add lana-bot-deployment.yaml'"
-                        sh "git push origin main"
-                    }
+                // Commit and push changes
+                dir("lanabot-k8s") {
+                    sh "git add ."
+                    sh "git commit -m 'Add lana-bot-deployment.yaml'"
+                    sh "git push origin master"
                 }
             }
         }
-
+    }
 
 
 
@@ -139,4 +136,8 @@ pipeline {
 }
 
 
-
+// Outside of the pipeline block, configure Git credentials
+withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+    // Set Git credentials
+    gitCredentials = "${env.GIT_USERNAME}:${env.GIT_PASSWORD}@github.com"
+}
