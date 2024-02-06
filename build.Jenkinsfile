@@ -66,7 +66,7 @@ pipeline {
             }
         }
 
-stage('Deploy on Agent') {
+        stage('Deploy on Agent') {
             agent {
                 label 'agent1'
             }
@@ -88,7 +88,6 @@ stage('Deploy on Agent') {
                 }
             }
         }
-    }
 
 
 
