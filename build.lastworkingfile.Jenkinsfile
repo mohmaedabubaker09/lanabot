@@ -56,46 +56,25 @@ pipeline {
             }
         }
 
-        stage('Copy File to Agent') {
+        stage('Checkout and Push to Another Repo') {
             steps {
-                // Stash the file in the controller
-                stash(name: 'yamlFile', includes: 'lana-bot-deployment.yaml')
+                script {
+                    pwd()
+                    echo 'Current Workspace:'
+                    sh 'ls -al'
+
+                    def deploymentFileContent = readFile(file: DEPLOYMENT_FILE_PATH).trim()
+                    checkout([$class: 'GitSCM', branches: [[name: '*/main']], userRemoteConfigs: [[url: 'https://github.com/mohmaedabubaker09/lanabot-k8s.git', credentialsId: GITHUB_CREDENTIALS_ID]]])
+                    echo "Original File: ${DEPLOYMENT_FILE_PATH}"
+                    echo 'Contents of New Workspace:'
+                    sh 'ls -al'
+
+                    writeFile(file: DEPLOYMENT_FILE_NAME, text: deploymentFileContent)
+
+                    sh "ls -al ${DEPLOYMENT_FILE_NAME}"
+                }
             }
         }
-
-        stage('Deploy on Agent') {
-            agent {
-                label 'agent1'
-            }
-            steps {
-                // Unstash the file on the agent
-                unstash 'yamlFile'
-                // Now you can use the file as needed on the agent
-                sh 'ls -l lana-bot-deployment.yaml' // Example: List the file on the agent
-            }
-        }
-
-
-//         stage('Checkout and Push to Another Repo') {
-//             steps {
-//                 script {
-//                     pwd()
-//                     echo 'Current Workspace:'
-//                     sh 'ls -al'
-//
-//                     def deploymentFileContent = readFile(file: DEPLOYMENT_FILE_PATH).trim()
-//                     checkout([$class: 'GitSCM', branches: [[name: '*/main']], userRemoteConfigs: [[url: 'https://github.com/mohmaedabubaker09/lanabot-k8s.git', credentialsId: GITHUB_CREDENTIALS_ID]]])
-//                     echo "Original File: ${DEPLOYMENT_FILE_PATH}"
-//                     echo 'Contents of New Workspace:'
-//                     sh 'ls -al'
-//
-//                     writeFile(file: DEPLOYMENT_FILE_NAME, text: deploymentFileContent)
-//
-//                     sh "ls -al ${DEPLOYMENT_FILE_NAME}"
-//                 }
-//             }
-//         }
-
 
 //                     withCredentials([usernamePassword(credentialsId: 'github', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
 //                         sh '''
@@ -116,6 +95,7 @@ pipeline {
         }
     }
 }
+
 
 
 
