@@ -4,7 +4,6 @@ withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'GI
     gitCredentials = "${env.GIT_USERNAME}:${env.GIT_PASSWORD}@github.com"
 }
 
-
 pipeline {
     agent any
 
@@ -69,7 +68,7 @@ pipeline {
 
         stage('Deploy on Agent') {
             agent {
-                label 'agent1'
+                label 'K8s_repo_agent'
             }
             steps {
                 unstash 'yamlFile'
