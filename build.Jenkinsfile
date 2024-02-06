@@ -1,4 +1,8 @@
 def gitCredentials // Define gitCredentials variable outside of the pipeline block
+withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+    // Set Git credentials
+    gitCredentials = "${env.GIT_USERNAME}:${env.GIT_PASSWORD}@github.com"
+}
 
 
 pipeline {
@@ -139,8 +143,8 @@ pipeline {
 }
 
 
-// Outside of the pipeline block, configure Git credentials
-withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-    // Set Git credentials
-    gitCredentials = "${env.GIT_USERNAME}:${env.GIT_PASSWORD}@github.com"
-}
+// // Outside of the pipeline block, configure Git credentials
+// withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+//     // Set Git credentials
+//     gitCredentials = "${env.GIT_USERNAME}:${env.GIT_PASSWORD}@github.com"
+// }
