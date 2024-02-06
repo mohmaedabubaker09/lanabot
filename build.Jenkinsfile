@@ -53,7 +53,7 @@ pipeline {
                         sh 'aws eks update-kubeconfig --region ${CLUSTER_REGION} --name ${CLUSTER_NAME}'
                         withCredentials([file(credentialsId: 'KUBE_CONFIG_CRED', variable: 'KUBECONFIG')]) {
                             sh "sed -i 's|image: .*|image: ${ECR_REGISTRY}/lana_bot_container:${IMAGE_TAG}|' lana-bot-deployment.yaml"
-                            sh 'kubectl apply -f lana-bot-deployment.yaml'
+//                             sh 'kubectl apply -f lana-bot-deployment.yaml'
                         }
                     }
                 }
