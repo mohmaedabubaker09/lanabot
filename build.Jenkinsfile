@@ -74,6 +74,9 @@ pipeline {
                 // Unstash the file on the agent
                 unstash 'yamlFile'
 
+                // Output gitCredentials for debugging
+                echo "Git Credentials: ${gitCredentials}"
+
                 // Clone the repository
                 sh "git clone https://${gitCredentials}/mohmaedabubaker09/lanabot-k8s.git"
 
@@ -84,10 +87,11 @@ pipeline {
                 dir("lanabot-k8s") {
                     sh "git add ."
                     sh "git commit -m 'Add lana-bot-deployment.yaml'"
-                    sh "git push origin master"
+                    sh "git push origin main"
                 }
             }
         }
+
 
 
 
