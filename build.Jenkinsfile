@@ -74,7 +74,7 @@ pipeline {
                 // Git configuration
                 withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                     // Set Git credentials
-                    gitCredentials = "${GIT_USERNAME}:${GIT_PASSWORD}@github.com"
+                    def gitCredentials = "${env.GIT_USERNAME}:${env.GIT_PASSWORD}@github.com"
 
                     // Clone the repository
                     sh "git clone https://${gitCredentials}/mohmaedabubaker09/lanabot-k8s.git"
@@ -86,7 +86,7 @@ pipeline {
                     dir("lanabot-k8s") {
                         sh "git add ."
                         sh "git commit -m 'Add lana-bot-deployment.yaml'"
-                        sh "git push origin master"
+                        sh "git push origin main"
                     }
                 }
             }
