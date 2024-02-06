@@ -26,9 +26,9 @@ spec:
         - containerPort: 8443
         resources:
           limits:
-            cpu: 2000m
-            memory: 2000Mi
+            cpu: 1000m
+            memory: 1000Mi
           requests:
-            cpu: 2000m
-            memory: 2000Mi
+            cpu: 1000m
+            memory: 1000Mi
 
