@@ -28,10 +28,18 @@ spec:
           httpGet:
             path: /
             port: 8443
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 5
         livenessProbe:
           httpGet:
             path: /
             port: 8443
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 5
         resources:
           limits:
             cpu: 1000m
