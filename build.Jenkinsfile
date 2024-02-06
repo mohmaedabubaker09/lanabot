@@ -70,10 +70,31 @@ pipeline {
             steps {
                 // Unstash the file on the agent
                 unstash 'yamlFile'
-                // Now you can use the file as needed on the agent
-                sh 'ls -l lana-bot-deployment.yaml' // Example: List the file on the agent
+
+                // Git configuration
+                withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                    // Set Git credentials
+                    gitCredentials = "${GIT_USERNAME}:${GIT_PASSWORD}@github.com"
+
+                    // Clone the repository
+                    sh "git clone https://${gitCredentials}/mohmaedabubaker09/lanabot-k8s.git"
+
+                    // Copy the file to the cloned repository
+                    sh "cp lana-bot-deployment.yaml lanabot-k8s/"
+
+                    // Commit and push changes
+                    dir("lanabot-k8s") {
+                        sh "git add ."
+                        sh "git commit -m 'Add lana-bot-deployment.yaml'"
+                        sh "git push origin master"
+                    }
+                }
             }
         }
+
+
+
+
 
 
 //         stage('Checkout and Push to Another Repo') {
