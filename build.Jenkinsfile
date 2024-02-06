@@ -81,6 +81,8 @@ pipeline {
                 // Output gitCredentials for debugging
                 echo "Git Credentials: ${gitCredentials}"
 
+                sh "rm -rf lanabot-k8s" // Remove existing directory
+
                 // Clone the repository
                 sh "git clone https://${gitCredentials}/mohmaedabubaker09/lanabot-k8s.git"
 
