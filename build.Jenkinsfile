@@ -90,11 +90,15 @@ pipeline {
                 // Commit and push changes
                 dir("lanabot-k8s") {
                     sh "git add ."
+                    sh "git config user.email 'mohmaedabubaker09@gmail.com'" // Set email address
+                    sh "git config user.name 'mohmaedabubaker09'" // Set user name
                     sh "git commit -m 'Add lana-bot-deployment.yaml'"
                     sh "git push origin main"
                 }
             }
         }
+
+
 
 
 
