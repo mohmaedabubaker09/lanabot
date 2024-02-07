@@ -288,6 +288,7 @@ class ObjectDetectionBot(Bot):
                 unique_filename = f"generated_image_{timestamp}.jpg"
                 self.save_dalle_image(image_url, unique_filename)
                 self.send_photo(chat_id, unique_filename)
+                self.send_text(chat_id, unique_filename)
             else:
                 self.send_text(chat_id, "Failed to generate image.")
 
