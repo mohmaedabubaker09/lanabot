@@ -284,8 +284,10 @@ class ObjectDetectionBot(Bot):
             image_url = self.dalle_generate_image(prompt)
 
             if image_url:
-                self.save_dalle_image(image_url, "generated_image.jpg")
-                self.send_photo(chat_id, "generated_image.jpg")
+                timestamp = int(time.time())
+                unique_filename = f"generated_image_{timestamp}.jpg"
+                self.save_dalle_image(image_url, unique_filename)
+                self.send_photo(chat_id, unique_filename)
             else:
                 self.send_text(chat_id, "Failed to generate image.")
 
