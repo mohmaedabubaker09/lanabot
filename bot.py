@@ -218,7 +218,7 @@ class ObjectDetectionBot(Bot):
                 # Ask user to generate a new image
                 markup = telebot.types.InlineKeyboardMarkup()
                 yes_button = telebot.types.InlineKeyboardButton(text="Yes please !",
-                                                                callback_data=self.summary)
+                                                                callback_data=str(self.summary))
                 no_button = telebot.types.InlineKeyboardButton(text="No, I'm fine", callback_data="no_generate")
                 markup.add(yes_button, no_button)
                 self.send_text(chat_id, "Would you like me to generate a new image for you?", reply_markup=markup)
