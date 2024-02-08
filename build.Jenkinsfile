@@ -5,7 +5,7 @@ withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'GI
 }
 
 pipeline {
-    agent any
+    agent none
 
     environment {
         ECR_REGISTRY = "933060838752.dkr.ecr.eu-west-2.amazonaws.com"
@@ -15,7 +15,7 @@ pipeline {
 
         GITHUB_CREDENTIALS_ID = 'github'
         AWS_CREDENTIALS_ID = 'AWS credentials'
-        KUBE_CONFIG_CRED = 'KUBE_CONFIG_CRED'
+        // KUBE_CONFIG_CRED = 'KUBE_CONFIG_CRED'
 
         ECR_REGION = "eu-west-2"
         CLUSTER_NAME = "k8s-main"
@@ -29,9 +29,9 @@ pipeline {
         stage('Login to AWS ECR') {
             steps {
                 script {
-                    withCredentials([aws(credentialsId: AWS_CREDENTIALS_ID, accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-//                         sh 'aws ecr get-login-password --region ${ECR_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}'
-                    }
+                    // withCredentials([aws(credentialsId: AWS_CREDENTIALS_ID, accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                         sh 'aws ecr get-login-password --region ${ECR_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}'
+                    // }
                 }
             }
         }
@@ -51,10 +51,10 @@ pipeline {
                 script {
                     withCredentials([aws(credentialsId: AWS_CREDENTIALS_ID, accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
 //                         sh 'aws eks update-kubeconfig --region ${CLUSTER_REGION} --name ${CLUSTER_NAME}'
-                        withCredentials([file(credentialsId: 'KUBE_CONFIG_CRED', variable: 'KUBECONFIG')]) {
+                        // withCredentials([file(credentialsId: 'KUBE_CONFIG_CRED', variable: 'KUBECONFIG')]) {
                             sh "sed -i 's|image: .*|image: ${ECR_REGISTRY}/lana_bot_container:${IMAGE_TAG}|' lana-bot-deployment.yaml"
 //                             sh 'kubectl apply -f lana-bot-deployment.yaml'
-                        }
+                        // }
                     }
                 }
             }
