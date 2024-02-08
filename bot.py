@@ -218,7 +218,7 @@ class ObjectDetectionBot(Bot):
                 # Ask user to generate a new image
                 markup = telebot.types.InlineKeyboardMarkup()
                 yes_button = telebot.types.InlineKeyboardButton(text="Yes please !",
-                                                                callback_data=str(self.summary))
+                                                                callback_data="yes_generate")
                 no_button = telebot.types.InlineKeyboardButton(text="No, I'm fine", callback_data="no_generate")
                 markup.add(yes_button, no_button)
                 self.send_text(chat_id, "Would you like me to generate a new image for you?", reply_markup=markup)
@@ -275,13 +275,13 @@ class ObjectDetectionBot(Bot):
         message_id = callback_query['message']['message_id']
         chat_id = message['chat']['id'] if message else None
 
-        if callback_data != "no_generate":
+        if callback_data == "yes_generate":
 
             self.delete_message(chat_id, message_id)
             please_wait_id = self.send_text(chat_id, "Please wait ⏳")
 
             prompt = self.summary
-            image_url = self.dalle_generate_image(callback_data)
+            image_url = self.dalle_generate_image(prompt)
 
             if image_url:
                 self.save_dalle_image(image_url, "generated_image.jpg")
