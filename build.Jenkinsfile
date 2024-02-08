@@ -5,7 +5,7 @@ withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'GI
 }
 
 pipeline {
-    agent none
+    agent any
 
     environment {
         ECR_REGISTRY = "933060838752.dkr.ecr.eu-west-2.amazonaws.com"
